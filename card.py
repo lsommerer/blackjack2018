@@ -46,14 +46,44 @@ class Card(object):
     hardValueDict = dict(zip(names, hardValues))
     softValueDict = dict(zip(names, softValues))
 
+    ranks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10 , 11, 12, 13]
+    rankDict = dict(zip(names, ranks))
+
     useUnicode = True
-    totalCards = 0
+    #
+    # Debug Mode:
+    #   True: cards can be printed even if they are not "showing".
+    #   false: cards display '[flipped over]' if they are printed while not showing.
+    #
+    debugMode = False
+    #
+    # Note on is_showing():
+    #
+    #   It is the responsibility of the object calling Card object getters to ask the card
+    #   if it is currently visible before asking for any specific information about the card.
+    #
+    #   correct:  if dealerCard.is_showing() and dealerCard.is_ace():
+    #                   dealer.offer_insurance()
+    #
+    #   incorrect:  if dealerCard.is_ace():
+    #                   dealer.offer_insurance()
+    #
+    #   if you ask for information about a card that is not showing, a RulesError exception
+    #   will be raised.
+    #
 
     def __init__(self, name, suit):
         #
-        # Check that the name is legal
+        # Check that the name is a legal name.
         #
         if name.lower() in Card.names:
+            self.__name = name.lower()
+            self.__shortName = Card.shortNameDict[self.__name]
+        #
+        # Or that name is a legal short name, just in case.
+        #
+        elif name.upper() in Card.shortNames:
+            name = Card.names[Card.shortNames.index(name.upper())]
             self.__name = name.lower()
             self.__shortName = Card.shortNameDict[self.__name]
         else:
@@ -83,67 +113,128 @@ class Card(object):
         # A few more settings
         #
         self.__showing = False
+        self.__rank = Card.rankDict[self.__name]
         self.__hardValue = Card.hardValueDict[self.__name]
         self.__softValue = Card.softValueDict[self.__name]
-        Card.totalCards += 1
 
     def __str__(self):
         if Card.useUnicode:
-            suitString = Card.unicodeDict[self.__suit]
+            string = f'{self.__shortName}{suitString}'
         else:
-            suitString = self.__suit.capitalize()
-        #        return "%s of %s" % (nameString,suitString)
-        return "%s%s" % (self.__shortName, suitString)
+            string = f'{self.__name.capitalize()} of {self.__suit.capitalize()}'
+        if not self.__showing and not Card.debugMode:
+            string = '[face down]'
+        return string
 
     def __repr__(self):
-        return "Card('%s','%s')" % (self.__name, self.__suit)
+        return f"Card({self.__name},{self.__suit})"
 
     def __eq__(self, other):
-        equal = False
-        if self.__softValue == other.__softValue:
-            equal = True
-        return equal
-
-    def is_showing(self):
-        """Returns True if the card is face-up and can be seen."""
-        return self.__showing
-
-    def is_facecard(self):
-        """Returns True if the card is a facecard."""
-        if not self.is_showing():
-            raise RuleError('card is not showing, you can not use is_face_card()')
-        return self.__isFacecard
-
-    def is_ace(self):
-        """Returns True if the card is an ace."""
-        if not self.is_showing():
-            raise RuleError('card is not showing, you can not use is_ace()')
-        return self.__isAce
-
-    def hard_value(self):
-        """Returns the hard value of the card."""
-        if not self.is_showing():
-            raise RuleError('card is not showing, you can not use hard_value()')
-        return self.__hardValue
-
-    def soft_value(self):
-        """Returns the soft value of the card."""
-        if not self.is_showing():
-            raise RuleError('card is not showing, you can not use hard_value()')
-        return self.__softValue
+        #
+        # This special method is called when the == operator is invoked.
+        #
+        return self.__rank == other.__rank
 
     def flip(self):
         """Flips the card over from 'showing' to 'not showing' or visa versa."""
         self.__showing = not self.__showing
 
-    def suit(self):
+    def is_showing(self):
+        """Returns True if the card is face-up and can be seen."""
+        return self.__showing
+
+    def get_facecard(self):
+        """Returns True if the card is a facecard."""
+        if not self.is_showing():
+            raise RuleError('card is not showing, you can not use is_face_card()')
+        return self.__isFacecard
+
+    def get_ace(self):
+        """Returns True if the card is an ace."""
+        if not self.is_showing():
+            raise RuleError('card is not showing, you can not use is_ace()')
+        return self.__isAce
+
+    def get_hard_value(self):
+        """Returns the hard value of the card."""
+        if not self.is_showing():
+            raise RuleError('card is not showing, you can not use hard_value()')
+        return self.__hardValue
+
+    def get_soft_value(self):
+        """Returns the soft value of the card."""
+        if not self.is_showing():
+            raise RuleError('card is not showing, you can not use hard_value()')
+        return self.__softValue
+
+    def get_suit(self):
         """Returns the suit of the card."""
         if not self.is_showing():
             raise RuleError('card is not showing, you can not use suit()')
         return self.__suit
 
-    def name(self):
+    def get_name(self):
         """Returns the name of the card."""
         if not self.is_showing():
             raise RuleError('card is not showing, you can not use name()')
         return self.__name
+
+    def get_rank(self):
+        """Returns the rank of the card."""
+        if not self.is_showing():
+            raise RuleError('card is not showing, you can not use rank()')
+        return self.__rank
+
+    facecard = property(get_facecard)
+    ace = property(get_ace)
+    hard_value = property(get_hard_value)
+    soft_value = property(get_soft_value)
+    suit = property(get_suit)
+    name = property(get_name)
+    rank = property(get_rank)
+
+if __name__ == '__main__':
+
+    import unittest
+
+    class CardTester(unittest.TestCase):
+
+        def test_is_showing(self):
+            c = Card('ace', 'spades')
+            #
+            # Turn card face up (they start face down).
+            #
+            c.flip()
+            self.assertTrue(c.is_showing())
+            self.assertTrue(c.ace)
+            self.assertFalse(c.facecard)
+            self.assertEqual(c.rank, 1)
+            self.assertEqual(c.name, 'ace')
+            self.assertEqual(c.suit, 'spades')
+            self.assertEqual(c.soft_value, 11)
+            self.assertEqual(c.hard_value, 1)
+            #
+            # Turn card face down.
+            #
+            c.flip()
+            self.assertFalse(c.is_showing())
+            with self.assertRaises(RuleError):
+                c.ace
+                c.facecard
+                c.rank
+                c.name
+                c.suit
+                c.soft_value
+                c.hard_value
+
+        def test_equality(self):
+            c1 = Card('ace', 'spades')
+            c2 = Card('ace', 'hearts')
+            c3 = Card('king', 'spades')
+            c4 = Card('queen', 'spades')
+
+            self.assertTrue(c1 == c2, 'Cards with the same name should be equal.')
+            self.assertFalse(c1 == c3, 'Cards with the same suit are not necessarily equal.')
+            self.assertFalse(c3 == c4, 'Cards with the same value are not necessarily equal.')
+
+    unittest.main(verbosity=2)
