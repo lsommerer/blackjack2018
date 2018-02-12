@@ -1,44 +1,24 @@
 from card import Card
-from random import randrange
+from cardcollection import CardCollection
 
 
-class Deck(list):
+class Deck(CardCollection):
 
     def __init__(self):
-        list.__init__(self)
+        super().__init__()
         for suit in Card.suits:
             for name in Card.names:
                 card = Card(name, suit)
                 self.append(card)
 
-    def __str__(self):
-        debugMode = Card.debugMode
-        Card.debugMode = True
-        deckString = '['
-        for card in self:
-            deckString += str(card) + ', '
-        deckString = deckString[:-2] + "]"
-        Card.debugMode = debugMode
-        return deckString
-
-    def shuffle(self):
-        """Shuffles the deck in place"""
-        for pos1 in range(len(self)):
-            pos2 = randrange(len(self))
-            self[pos1], self[pos2] = self[pos2], self[pos1]
-
-    def draw(self):
-        """Returns the top card from the deck; removing it from the deck in the process."""
-        if len(self) >= 1:
-            card = self.pop()
-        else:
-            raise ValueError('Not enough cards in the deck to draw')
-        return card
-
-    def flip(self):
-        """Turn over all the cards in the deck. Useful for testing."""
-        for card in self:
-            card.flip()
+    def stack(self, deckFile='stacked-deck.txt'):
+        """Stack the deck. Also useful for testing."""
+        self.clear()
+        with open(deckFile,'r') as file:
+            for line in file:
+                value, suit = line.split(" of ")
+                card = Card(value, suit.strip())
+                self.append(card)
 
 
 import unittest
