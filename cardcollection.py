@@ -9,7 +9,7 @@ class CardCollection(list):
 
     def __str__(self):
         if len(self) == 0:
-            string = '[ ]'
+            string = '[no cards]'
         else:
             debugMode = Card.debugMode
             Card.debugMode = True
@@ -18,7 +18,7 @@ class CardCollection(list):
                 string += str(card) + ', '
             string = string[:-2] + "]"
             Card.debugMode = debugMode
-            return string
+        return string
 
     def shuffle(self):
         """Shuffles the collection in place"""

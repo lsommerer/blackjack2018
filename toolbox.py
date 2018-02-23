@@ -113,6 +113,14 @@ def get_integer_between(low, high, prompt="Enter an integer:"):
     return number
 
 
+def get_number_between(low, high, prompt="Enter a number:"):
+    number = get_number(prompt)
+    prompt += " (" + str(low) + "-" + str(high) + ")"
+    while (number < low) or (number > high):
+        number = get_number(prompt)
+    return number
+
+
 def get_boolean(prompt):
     """Ask the user a yes or no question"""
     prompt = prompt + " (y/n) "

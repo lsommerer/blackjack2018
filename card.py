@@ -112,7 +112,7 @@ class Card(object):
         #
         # A few more settings
         #
-        self.__showing = False
+        self.__isShowing = False
         self.__rank = Card.rankDict[self.__name]
         self.__hardValue = Card.hardValueDict[self.__name]
         self.__softValue = Card.softValueDict[self.__name]
@@ -122,7 +122,7 @@ class Card(object):
             string = f'{self.__shortName}{Card.unicodeDict[self.__suit]}'
         else:
             string = f'{self.__name.capitalize()} of {self.__suit.capitalize()}'
-        if not self.__showing and not Card.debugMode:
+        if not self.__isShowing and not Card.debugMode:
             string = '[face down]'
         return string
 
@@ -140,11 +140,11 @@ class Card(object):
 
     def flip(self):
         """Flips the card over from 'showing' to 'not showing' or visa versa."""
-        self.__showing = not self.__showing
+        self.__isShowing = not self.__isShowing
 
     def is_showing(self):
         """Returns True if the card is face-up and can be seen."""
-        return self.__showing
+        return self.__isShowing
 
     def same_suit(self, other):
         """Returns True if both cards are the same suit."""
@@ -158,13 +158,13 @@ class Card(object):
             raise RuleError('card is not showing, you can not use same_rank()')
         return self.rank == other.rank
 
-    def get_facecard(self):
+    def get_is_facecard(self):
         """Returns True if the card is a facecard."""
         if not self.is_showing():
             raise RuleError('card is not showing, you can not use is_face_card()')
         return self.__isFacecard
 
-    def get_ace(self):
+    def get_is_ace(self):
         """Returns True if the card is an ace."""
         if not self.is_showing():
             raise RuleError('card is not showing, you can not use is_ace()')
@@ -201,10 +201,10 @@ class Card(object):
             raise RuleError('card is not showing, you can not use rank()')
         return self.__rank
 
-    facecard = property(get_facecard)
-    ace = property(get_ace)
-    hard_value = property(get_hard_value)
-    soft_value = property(get_soft_value)
+    isFacecard = property(get_is_facecard)
+    isAce = property(get_is_ace)
+    hardValue = property(get_hard_value)
+    softValue = property(get_soft_value)
     suit = property(get_suit)
     name = property(get_name)
     rank = property(get_rank)
@@ -221,36 +221,50 @@ class CardTester(unittest.TestCase):
         #
         c.flip()
         self.assertTrue(c.is_showing())
-        self.assertTrue(c.ace)
-        self.assertFalse(c.facecard)
+        self.assertTrue(c.isAce)
+        self.assertFalse(c.isFacecard)
         self.assertEqual(c.rank, 1)
         self.assertEqual(c.name, 'ace')
         self.assertEqual(c.suit, 'spades')
-        self.assertEqual(c.soft_value, 11)
-        self.assertEqual(c.hard_value, 1)
+        self.assertEqual(c.softValue, 11)
+        self.assertEqual(c.hardValue, 1)
         #
         # Turn card face down.
         #
         c.flip()
         self.assertFalse(c.is_showing())
         with self.assertRaises(RuleError):
-            c.ace
-            c.facecard
+            c.isAce
+            c.isFacecard
             c.rank
             c.name
             c.suit
-            c.soft_value
-            c.hard_value
+            c.softValue
+            c.hardValue
 
     def test_equality(self):
         c1 = Card('ace', 'spades')
-        c2 = Card('ace', 'hearts')
-        c3 = Card('king', 'spades')
+        c2 = Card('ace', 'spades')
+        c3 = Card('king', 'hearts')
         c4 = Card('queen', 'spades')
 
-        self.assertTrue(c1 == c2, 'Cards with the same name should be equal.')
+        c1.flip()
+        c2.flip()
+        c3.flip()
+        c4.flip()
+
+        self.assertTrue(c1 == c2, 'Identical cards should be equal.')
         self.assertFalse(c1 == c3, 'Cards with the same suit are not necessarily equal.')
         self.assertFalse(c3 == c4, 'Cards with the same value are not necessarily equal.')
+
+        self.assertTrue(c1.same_rank(c2), 'two aces should have the same rank.')
+        self.assertFalse(c1.same_rank(c3), 'Ace and king have different ranks.')
+        self.assertFalse(c3.same_rank(c4), 'King and queen have different ranks.')
+
+        self.assertTrue(c1.same_suit(c2), 'Identical cards have the same suit.')
+        self.assertTrue(c1.same_suit(c4), 'Two spades should have the same suit.')
+        self.assertFalse(c1.same_suit(c3), 'Spades and hearts should not be equal')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
