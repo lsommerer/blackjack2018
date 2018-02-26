@@ -32,7 +32,7 @@ class Dealer(Player):
         #
         pass
 
-    def insurance(self):
+    def want_insurance(self):
         """
         Returns True if the player should buy insurance else return False.
 
@@ -94,7 +94,7 @@ class Dealer(Player):
             else:
                 print(f"{name} doesn't have enough money to bet ${betAmount:0.2f}. Sitting this hand out.")
             for player in leavingPlayers:
-                self._table.leave(player)
+                self._table.leave_table(player)
 
 
     def deal(self):
@@ -197,7 +197,7 @@ class Dealer(Player):
                     pass
                 elif dealerHand.isBusted:
                     pass
-                elif hand > dealerHand
+                elif hand > dealerHand:
                     pass
         for player in self._playersWithInsurance:
             if dealerHand.isBlackJack:
