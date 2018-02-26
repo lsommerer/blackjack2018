@@ -1,6 +1,6 @@
 class Table(object):
 
-    def __init__(self):
+    def __init__(self, rules):
         self._players = []
         self._dealer = None
 
