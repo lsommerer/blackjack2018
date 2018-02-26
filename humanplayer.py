@@ -17,16 +17,15 @@ class HumanPlayer(Player):
         return bet
 
 
-    def insurance(self, hand, dealerShowing):
+    def wants_insurance(self):
         """
         Returns True if the player should buy insurance else return False.
 
         This procedure is called by the dealer after all players have bet and
         receives their cards and after the dealer has received his cards. It is
-        only called if the dealer is showing an ace, ten or a face card. i.e.
-        when the dealer might have blackjack.
+        only called if the dealer is showing an ace (the dealer might have blackjack).
         """
-        return get_boolean(f'Do you want insurance? (The dealer has a {dealerShowing})')
+        return get_boolean('Do you want insurance? (The dealer has an ace showing)')
 
 
     def play(self, hand, dealerShowing):

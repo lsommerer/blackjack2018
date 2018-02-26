@@ -5,6 +5,8 @@ from cardcollection import CardCollection
 class Hand(CardCollection):
 
     def __init__(self, bet):
+        if bet <= 0:
+            raise ValueError('Bet must be greater than zero.')
         super().__init__()
         self.isVerbose = False
         self._bet = bet
@@ -128,7 +130,9 @@ class Hand(CardCollection):
         if not self.can_double():
             raise RuleError("Can't double down on this hand: " + str(self))
         if additionalBet > self._bet:
-            raise RuleError('Double Down bet can not be more than original bet.')
+            raise ValueError('Double Down bet can not be more than original bet.')
+        if additionalBet <= 0:
+            raise ValueError('Double Down bet can not be less than or equal to zero.')
         if self.isVerbose:
             print("  doubled down and received: " + str(card))
         self._bet += additionalBet
@@ -172,6 +176,7 @@ class Hand(CardCollection):
 
     def get_bet(self):
         return self._bet
+
 
     isBlackJack = property(get_is_blackjack)
     isBusted = property(get_is_busted)

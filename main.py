@@ -9,8 +9,8 @@ def main():
     while table.has_players():
         dealer.deal()
         dealer.offer_insurance()
-        dealer.offer_surrender()
-        dealer.resolve_hands()
-        dealer.payout()
+        dealer.play_hands()
+        dealer.play_own_hand()
+        dealer.payout_hands()
         dealer.take_bets()
 

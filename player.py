@@ -48,24 +48,15 @@ class Player(object):
         """
         raise NotImplementedError("Please implment this in your subclass.")
 
-    def insurance(self, hand, dealerShowing):
+    def wants_insurance(self):
         """
         Returns True if the player should buy insurance else return False.
 
         This procedure is called by the dealer after all players have bet and
         receives their cards and after the dealer has received his cards. It is
-        only called if the dealer is showing an ace, ten or a face card. i.e.
-        when the dealer might have blackjack.
+        only called if the dealer is showing an ace (the dealer might have blackjack).
         """
         raise NotImplementedError("Please implment this in your subclass.")
-
-    #TODO remove this method. Functionality has been moved to play().
-    def surrender(self, hand, dealerShowing):
-        """
-        Upon further reflection, this should probably be one of the things that play()
-        can return as a player decision for that hand.
-        """
-        pass
 
     def play(self, hand, dealerShowing):
         """
