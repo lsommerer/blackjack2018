@@ -1,6 +1,6 @@
 def main():
     table = Table(doubleOn=[9,10,11])
-    dealer = Dealer()
+    dealer = Dealer('Bob the Dealer', 1000000)
     dealer.sit(table)
     for number in range(1,numberOfPlayers):
         player = Player(f'player{number}',100)

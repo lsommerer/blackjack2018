@@ -6,8 +6,8 @@ from table import Table
 
 class Dealer(Player):
 
-    def __init__(self):
-        super(self).__init__()
+    def __init__(self, name, money):
+        super(self).__init__('Bob the dealer', 1000000)
         self._playingPlayers = []
         self._playersWithInsurance = []
         self._shoe = Shoe()
