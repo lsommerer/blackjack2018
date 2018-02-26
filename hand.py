@@ -65,6 +65,9 @@ class Hand(CardCollection):
     def soft_value(self):
         numberOfAces = 0
         value = 0
+        #TODO remove this debugging code
+#        print('length of hand:',len(self))
+#        print('hand:',self[0])
         for card in self:
             if card.isAce:
                 numberOfAces += 1

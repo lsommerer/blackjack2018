@@ -7,7 +7,7 @@ from table import Table
 class Dealer(Player):
 
     def __init__(self, name, money):
-        super(self).__init__('Bob the dealer', 1000000)
+        super().__init__('Bob the dealer', 1000000)
         self._playingPlayers = []
         self._playersWithInsurance = []
         self._shoe = Shoe()
@@ -64,7 +64,7 @@ class Dealer(Player):
                     'u': 's[U]rrender'}
         return choice, additionalBet
         """
-        if hand.value < 17:
+        if hand.value() < 17:
             choice = 'h' #hit
         else:
             choice = 's' #stand
@@ -75,9 +75,11 @@ class Dealer(Player):
         self._playingPlayers = []
         leavingPlayers = []
         for player in self._table.players:
+            #
             # = -1: player is leaving the table
             # =  0: players is sitting this hand out
             # >  0: player is betting this amount
+            #
             betAmount = player.bet_or_leave()
             name = player.name.capitalize()
             if betAmount == -1:  # leaving table
@@ -95,7 +97,15 @@ class Dealer(Player):
                 print(f"{name} doesn't have enough money to bet ${betAmount:0.2f}. Sitting this hand out.")
             for player in leavingPlayers:
                 self._table.leave_table(player)
+                print(f"playing players: {self._playingPlayers}")
 
+    def show_card_to_players(self, card):
+        """
+        Make sure that players who might be counting cards get to see
+        every card that is delt, not just the ones in their hands.
+        """
+        for player in self._playingPlayers:
+            player.count(card)
 
     def deal(self):
         """
@@ -106,21 +116,35 @@ class Dealer(Player):
         #
         if self._shoe.should_shuffle():
             self._shoe.shuffle()
+            for player in self._playingPlayers:
+                player.reset_count()
         #
         # Deal cards to each player.
         #
         cardsToDeal = 2
         for _ in range(cardsToDeal):
             for player in self._playingPlayers:
-                card = self._shoe.draw()
-                card.flip()
+                card = self._shoe.draw().flip()
                 player.hands[0].hit(card)
+                self.show_card_to_players(card)
+
         #
-        # Deal yourself some cards.
+        # Deal yourself some cards. It doesn't matter what we
+        # bet here, because we are not actually ever paying out
+        # or changing the dealer's money. So let's bet pi. That
+        # way we will know the dealer by his bet.
         #
-        self.add_hand(Hand(0))
+        bet = 3.1415
+        self.add_hand(Hand(bet))
+        card = self._shoe.draw().flip()
+        #TODO remove this debugging code
+#        print('shoe:', self._shoe)
+#        print('draw test:', self._shoe.draw())
+#        print('flip test:', self._shoe.draw().flip())
+#        print('card:', card)
+        self.hands[0].hit(card)
+        self.show_card_to_players(card)
         self.hands[0].hit(self._shoe.draw().flip())
-        self.hands[0].hit(self._shoe.draw())
 
     def offer_insurance(self):
         self._playersWithInsurance = []
@@ -129,9 +153,11 @@ class Dealer(Player):
                 if player.wants_insurance():
                     self._playersWithInsurance.append(player)
 
-    def play_hands(self):
+    def play_hands(self, whichPlayers = None):
+        if whichPlayers == None:
+            whichPlayers = self._playingPlayers
         dealerShowing = self.hands[0][1]
-        for player in self._playingPlayers:
+        for player in whichPlayers:
             for hand in player.hands:
                 while hand.can_hit():
                     playerDecision, additionalBet = player.play(hand,dealerShowing)
@@ -144,7 +170,9 @@ class Dealer(Player):
                     # [H]it
                     #
                     elif playerDecision == 'h':
-                        hand.hit(self._shoe.draw().flip())
+                        card = self._shoe.draw().flip()
+                        self.show_card_to_players(card)
+                        hand.hit(card)
                     #
                     # s[P]lit
                     #
@@ -152,9 +180,13 @@ class Dealer(Player):
                         if hand.can_split() and player.money >= hand.bet:
                             self.rake_in(player.rake_out(hand.bet))
                             newHand = Hand(hand.bet).hit(hand.split())
-                            newHand.hit(self._shoe.draw().flip())
+                            card = self._shoe.draw().flip()
+                            self.show_card_to_players(card)
+                            newHand.hit(card)
                             player.add_hand(newHand)
-                            hand.hit(self._shoe.draw().flip())
+                            card = self._shoe.draw().flip()
+                            self.show_card_to_players(card)
+                            hand.hit(card)
                         else:
                             print("Sorry, you can't split this hand (pick again).")
                     #
@@ -162,7 +194,9 @@ class Dealer(Player):
                     #
                     elif playerDecision == 'd':
                         if hand.can_double() and is_number(additionalBet) and player.money >= additionalBet:
-                            hand.double_down(self._shoe.draw().flip(), additionalBet)
+                            card = self._shoe.draw().flip()
+                            self.show_card_to_players(card)
+                            hand.double_down(card, additionalBet)
                             self.rake_in(player.rake_out(additionalBet))
                         else:
                             print("Sorry, you can't double this hand (pick again).")
@@ -178,30 +212,46 @@ class Dealer(Player):
                         print(f"I'm sorry, I don't know what '{playerDecision}' means.")
 
     def play_own_hand(self):
-        playingPlayers = self._playingPlayers
-        self._playingPlayers = [self]
-        self.play_hands()
-        self._playingPlayers = playingPlayers
+        #
+        # Show the dealer's hole card to everyone. This allows players who
+        # are counting cards to include the dealer's hole card in their count.
+        #
+        holeCard = self.hands[0][1]
+        self.show_card_to_players(holeCard)
+        self.play_hands([self])
 
     def payout_hands(self):
         dealerHand = self.hands[0]
         for player in self._playingPlayers:
-            for hand in player:
+            for hand in player.hands:
                 if hand.isBusted:
-                    pass
+                    winnings = 0
                 elif hand.isBlackJack and not dealerHand.isBlackJack:
-                    pass
+                    winnings = hand.bet * 3
                 elif hand.isBlackJack and dealerHand.isBlackJack:
-                    pass
-                elif hand == dealerHand:
-                    pass
+                    winnings = hand.bet
+                elif not hand.isBlackJack and dealerHand.isBlackJack:
+                    winnings = 0
+                elif hand.value() == dealerHand.value():
+                    winnings = hand.bet
                 elif dealerHand.isBusted:
-                    pass
-                elif hand > dealerHand:
-                    pass
-        for player in self._playersWithInsurance:
-            if dealerHand.isBlackJack:
-                pass
+                    winnings = hand.bet * 2
+                elif hand.value() > dealerHand.value():
+                    winnings = hand.bet * 2
+                player.rake_in(winnings)
+                self.rake_out(winnings)
+                print(f"{player.name} won ${winnings:02f} on {hand}.")
+        if dealerHand.isBlackJack:
+            for player in self._playersWithInsurance:
+                winnings = player.hands[0].bet * 2
+                player.rake_in(winnings)
+                self.rake_out(winnings)
+                print(f"{player.name} won ${winnings:02f} on the insurance bet.")
+        for player in self._playingPlayers:
+            player.discard_hands()
+        self.discard_hands()
+
+
 
 
 

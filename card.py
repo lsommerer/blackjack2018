@@ -141,6 +141,7 @@ class Card(object):
     def flip(self):
         """Flips the card over from 'showing' to 'not showing' or visa versa."""
         self.__isShowing = not self.__isShowing
+        return self
 
     def is_showing(self):
         """Returns True if the card is face-up and can be seen."""

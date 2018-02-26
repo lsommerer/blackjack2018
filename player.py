@@ -40,6 +40,9 @@ class Player(object):
         self._chips -= amount
         return amount
 
+    def discard_hands(self):
+        self._hands = []
+
     def bet_or_leave(self):
         """
         At the start of each round the player can either bet by entering an amount
