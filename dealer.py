@@ -91,7 +91,7 @@ class Dealer(Player):
                 print(f"{name} is leaving the table with ${player.money:0.2f}.")
             elif betAmount == 0:
                 print(f"{name} is sitting this hand out.")
-            elif betAmount > 0 and player.money > betAmount:
+            elif betAmount > 0 and player.money >= betAmount:
                 self._playingPlayers.append(player)
                 player.rake_out(betAmount)
                 self.rake_in(betAmount)
@@ -170,6 +170,8 @@ class Dealer(Player):
         dealerShowing = self.hands[0][1]
         for player in self._playingPlayers:
             for hand in player.hands:
+                if hand.isBlackJack:
+                    print(f"{player.name} has Blackjack! {hand}.")
                 while hand.can_hit():
                     sleep(1)
                     playerDecision, additionalBet = player.play(hand,dealerShowing)
@@ -192,7 +194,8 @@ class Dealer(Player):
     def player_split(self, player, hand, *args):
         if hand.can_split() and player.money >= hand.bet:
             self.rake_in(player.rake_out(hand.bet))
-            newHand = Hand(hand.bet).hit(hand.split())
+            newHand = Hand(hand.bet)
+            newHand.hit(hand.split())
             card = self._shoe.draw().flip()
             self.show_card_to_players(card)
             newHand.hit(card)
@@ -249,7 +252,7 @@ class Dealer(Player):
                     winnings = 0
                     text = 'lost'
                 elif hand.isBlackJack and not dealerHand.isBlackJack:
-                    winnings = hand.bet * 3
+                    winnings = hand.bet * 2.5
                     text = 'won (Blackjack!)'
                 elif hand.isBlackJack and dealerHand.isBlackJack:
                     winnings = hand.bet

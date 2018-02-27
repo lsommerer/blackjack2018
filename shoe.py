@@ -12,6 +12,7 @@ class Shoe(CardCollection):
             raise TypeError('Number of decks must be an integer.')
         self.__decks = decks
         self.populate_shoe()
+        self.shuffle()
         self.set_cut_card()
 
     def populate_shoe(self):
