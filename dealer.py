@@ -167,61 +167,53 @@ class Dealer(Player):
                 while hand.can_hit():
                     sleep(1)
                     playerDecision, additionalBet = player.play(hand,dealerShowing)
-                    #
-                    # [S]tand
-                    #
                     if playerDecision == 's':
-                        hand.stand()
-                        print(f"{player.name} stands with {hand}.")
-                    #
-                    # [H]it
-                    #
+                        self.stand(player, hand)
                     elif playerDecision == 'h':
-                        card = self._shoe.draw().flip()
-                        self.show_card_to_players(card)
-                        hand.hit(card)
-                        print(f"{player.name} hit and received a {card} {hand}.")
-                    #
-                    # s[P]lit
-                    #
+                        self.hit(player, hand)
                     elif playerDecision == 'p':
-                        if hand.can_split() and player.money >= hand.bet:
-                            self.rake_in(player.rake_out(hand.bet))
-                            newHand = Hand(hand.bet).hit(hand.split())
-                            card = self._shoe.draw().flip()
-                            self.show_card_to_players(card)
-                            newHand.hit(card)
-                            player.add_hand(newHand)
-                            card = self._shoe.draw().flip()
-                            self.show_card_to_players(card)
-                            hand.hit(card)
-                            print(f"{player.name} split and now has: \n   {hand}\n   {newHand}")
-                        else:
-                            print("Sorry, you can't split this hand (pick again).")
-                    #
-                    # [D]ouble down
-                    #
+                        self.split(player, hand)
                     elif playerDecision == 'd':
-                        if hand.can_double() and is_number(additionalBet) and player.money >= additionalBet:
-                            card = self._shoe.draw().flip()
-                            self.show_card_to_players(card)
-                            hand.double_down(card, additionalBet)
-                            self.rake_in(player.rake_out(additionalBet))
-                            print(f"{player.name} hit and received a {card} {hand}.")
-                        else:
-                            print("Sorry, you can't double this hand (pick again).")
-                    #
-                    # s[U]rrender
-                    #
+                        self.double_down(player, hand, additionalBet)
                     elif playerDecision == 'u':
                         print('Sorry, surrender is not implemented (pick again).')
-                    #
-                    # [A]nything else
-                    #
                     else:
                         print(f"I'm sorry, I don't know what '{playerDecision}' means.")
 
+    def stand(self, player, hand):
+        hand.stand()
+        print(f"{player.name} stands with {hand}.")
 
+    def hit(self, player, hand):
+        card = self._shoe.draw().flip()
+        self.show_card_to_players(card)
+        hand.hit(card)
+        print(f"{player.name} hit and received a {card} {hand}.")
+
+    def split(self, player, hand):
+        if hand.can_split() and player.money >= hand.bet:
+            self.rake_in(player.rake_out(hand.bet))
+            newHand = Hand(hand.bet).hit(hand.split())
+            card = self._shoe.draw().flip()
+            self.show_card_to_players(card)
+            newHand.hit(card)
+            player.add_hand(newHand)
+            card = self._shoe.draw().flip()
+            self.show_card_to_players(card)
+            hand.hit(card)
+            print(f"{player.name} split and now has: \n   {hand}\n   {newHand}")
+        else:
+            print("Sorry, you can't split this hand (pick again).")
+
+    def double_down(self, player, hand, additionalBet):
+        if hand.can_double() and is_number(additionalBet) and player.money >= additionalBet:
+            card = self._shoe.draw().flip()
+            self.show_card_to_players(card)
+            hand.double_down(card, additionalBet)
+            self.rake_in(player.rake_out(additionalBet))
+            print(f"{player.name} hit and received a {card} {hand}.")
+        else:
+            print("Sorry, you can't double this hand (pick again).")
 
     def play_own_hand(self):
         #
