@@ -7,6 +7,7 @@ class Player(object):
         self._chips = money
         self._table = None
         self._hands = []
+        self.insurance = 0
         self.isVerbose = False
 
     def __str__(self):

@@ -5,8 +5,6 @@ from cardcollection import CardCollection
 class Hand(CardCollection):
 
     def __init__(self, bet):
-        if bet <= 0:
-            raise ValueError('Bet must be greater than zero.')
         super().__init__()
         self.isVerbose = False
         self._bet = bet
