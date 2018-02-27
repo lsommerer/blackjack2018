@@ -14,10 +14,7 @@ class Table(object):
         self._players.remove(player)
 
     def has_players(self):
-        if len(self._players) > 0:
-            return True
-        else:
-            return False
+        return len(self._players) > 0
 
     def get_players(self):
         return self._players

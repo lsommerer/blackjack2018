@@ -73,7 +73,7 @@ class Dealer(Player):
         return choice, additionalBet
 
     def take_bets(self):
-        sleep(2)
+        sleep(1)
         print('\n---betting---')
         self._playingPlayers = []
         leavingPlayers = []
@@ -155,42 +155,41 @@ class Dealer(Player):
                     self._playersWithInsurance.append(player)
                     player.insurance = player.hands[0].bet
 
-    def play_hands(self, whichPlayers = None):
-        if whichPlayers == None:
-            whichPlayers = self._playingPlayers
-            print('\n---players are playing---')
-        else:
-            print('\n---dealer is playing---')
+    def play_hands(self):
+        """
+        Loop through the players and let them choose what they want to do. Then
+        process that decision.
+        """
+        playerOptions = {'s': self.player_stand,
+                         'h': self.player_hit,
+                         'p': self.player_split,
+                         'd': self.player_double_down,
+                         'u': self.player_surrender
+                         }
+        print('\n---players are playing---')
         dealerShowing = self.hands[0][1]
-        for player in whichPlayers:
+        for player in self._playingPlayers:
             for hand in player.hands:
                 while hand.can_hit():
                     sleep(1)
                     playerDecision, additionalBet = player.play(hand,dealerShowing)
-                    if playerDecision == 's':
-                        self.stand(player, hand)
-                    elif playerDecision == 'h':
-                        self.hit(player, hand)
-                    elif playerDecision == 'p':
-                        self.split(player, hand)
-                    elif playerDecision == 'd':
-                        self.double_down(player, hand, additionalBet)
-                    elif playerDecision == 'u':
-                        print('Sorry, surrender is not implemented (pick again).')
+                    if playerDecision in playerOptions:
+                        which_option = playerOptions[playerDecision]
+                        which_option(player, hand, additionalBet)
                     else:
                         print(f"I'm sorry, I don't know what '{playerDecision}' means.")
 
-    def stand(self, player, hand):
+    def player_stand(self, player, hand, *args):
         hand.stand()
         print(f"{player.name} stands with {hand}.")
 
-    def hit(self, player, hand):
+    def player_hit(self, player, hand, *args):
         card = self._shoe.draw().flip()
         self.show_card_to_players(card)
         hand.hit(card)
         print(f"{player.name} hit and received a {card} {hand}.")
 
-    def split(self, player, hand):
+    def player_split(self, player, hand, *args):
         if hand.can_split() and player.money >= hand.bet:
             self.rake_in(player.rake_out(hand.bet))
             newHand = Hand(hand.bet).hit(hand.split())
@@ -205,7 +204,7 @@ class Dealer(Player):
         else:
             print("Sorry, you can't split this hand (pick again).")
 
-    def double_down(self, player, hand, additionalBet):
+    def player_double_down(self, player, hand, additionalBet):
         if hand.can_double() and is_number(additionalBet) and player.money >= additionalBet:
             card = self._shoe.draw().flip()
             self.show_card_to_players(card)
@@ -215,6 +214,9 @@ class Dealer(Player):
         else:
             print("Sorry, you can't double this hand (pick again).")
 
+    def player_surrender(self, player, hand, *args):
+        print('Sorry, surrender is not implemented (pick again).')
+
     def play_own_hand(self):
         #
         # Show the dealer's hole card to everyone. This allows players who
@@ -223,6 +225,19 @@ class Dealer(Player):
         holeCard = self.hands[0][1]
         self.show_card_to_players(holeCard)
         self.play_hands([self])
+
+    def play_own_hand(self):
+        print('\n---dealer is playing---')
+        playerOptions = {'s': self.player_stand,
+                         'h': self.player_hit}
+        hand = self.hands[0]
+        dealerShowing = hand[0]
+        while hand.can_hit():
+            playerDecision, additionalBet = self.play(hand,dealerShowing)
+            which_option = playerOptions[playerDecision]
+            which_option(self, hand, additionalBet)
+
+
 
     def payout_hands(self):
         print('\n---results---')
@@ -258,7 +273,9 @@ class Dealer(Player):
                 self.rake_out(winnings)
                 winnings = abs(winnings-hand.bet)
                 print(f"{player.name} {text} ${winnings:0.2f} on {hand}.")
-
+        #
+        # Payout any insurance bets.
+        #
         for player in self._playersWithInsurance:
             if dealerHand.isBlackJack:
                 winnings = player.insurance * 2
@@ -267,10 +284,14 @@ class Dealer(Player):
                 print(f"{player.name} won ${player.insurance:0.2f} on the insurance bet.")
             else:
                 print(f"{player.name} lost ${player.insurance:0.2f} on the insurance bet.")
+        #
+        # Clear the table and get ready for the next round.
+        #
         for player in self._playingPlayers:
             player.discard_hands()
             player.insurance = 0
         self.discard_hands()
+        print('---results complete---')
 
 
 
