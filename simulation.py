@@ -2,6 +2,7 @@ from virtualtable import VirtualTable
 from sommererbots import SommererBotOne, SommererBotTwo
 from shoe import Shoe
 from copy import deepcopy
+from random import seed
 
 class Simulation(object):
 
@@ -45,24 +46,25 @@ class Simulation(object):
             for player in table.players:
                 print(player)
                 print(f"   hands:      {player.handsPlayed}")
-                print(f"   wagers:    ${player.totalWagers:0.2f} (${player.totalWagers/player.handsPlayed:0.2f}/hand")
+                print(f"   wagers:    ${player.totalWagers:0.2f} (${player.totalWagers/player.handsPlayed:0.2f}/hand)")
                 print()
                 print(f"   hit:        {player.timesHit} ({player.timesHit/player.handsPlayed} per hand)")
-                print(f"   split:      {player.timesSplit} ({player.timesSplit/player.handsPlayed*100}% of the time")
-                print(f"   doubled:    {player.timesDoubled} ({player.timesDoubled/player.handsPlayed*100}% of the time")
+                print(f"   split:      {player.timesSplit} ({player.timesSplit/player.handsPlayed*100:.0f}% of the time)")
+                print(f"   doubled:    {player.timesDoubled} ({player.timesDoubled/player.handsPlayed*100:.0f}% of the time)")
                 print()
-                print(f"   blackjack!: {player.timesBlackjack} ({player.timesBlackjack/player.handsPlayed*100}% of the time")
-                print(f"   busted:     {player.timesBusted} ({player.timesBusted/player.handsPlayed*100}% of the time")
+                print(f"   blackjack!: {player.timesBlackjack} ({player.timesBlackjack/player.handsPlayed*100:.0f}% of the time)")
+                print(f"   busted:     {player.timesBusted} ({player.timesBusted/player.handsPlayed*100:.0f}% of the time)")
                 print()
-                print(f"   won:        {player.timesWon} ({player.timesWon/player.handsPlayed*100}% of the time")
-                print(f"   lost:       {player.timesLost} ({player.timesLost/player.handsPlayed*100}% of the time")
-                print(f"   pushed:     {player.timesPushed} ({player.timesPushed/player.handsPlayed*100}% of the time")
+                print(f"   won:        {player.timesWon} ({player.timesWon/player.handsPlayed*100:.0f}% of the time)")
+                print(f"   lost:       {player.timesLost} ({player.timesLost/player.handsPlayed*100:.0f}% of the time)")
+                print(f"   pushed:     {player.timesPushed} ({player.timesPushed/player.handsPlayed*100:.0f}% of the time)")
                 print()
-                print(f"   insurance:  {player.timesInsurance} ({player.timesInsurance/player.handsPlayed*100}% of the time")
-                print(f"   surrender:  {player.timesSurrendered} ({player.timesSurrendered/player.handsPlayed*100}% of the time")
+                print(f"   insurance:  {player.timesInsurance} ({player.timesInsurance/player.handsPlayed*100:.0f}% of the time)")
+                print(f"   surrender:  {player.timesSurrendered} ({player.timesSurrendered/player.handsPlayed*100:.0f}% of the time)")
                 print()
 
 def main():
+    seed(1)
     simulation = Simulation()
 
     table1 = VirtualTable(simulation)
@@ -73,6 +75,7 @@ def main():
     player2 = SommererBotTwo()
     player2.sit(table2)
 
+    simulation.switch_all_shoes()
     simulation.run()
     simulation.results()
 

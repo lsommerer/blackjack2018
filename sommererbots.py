@@ -13,7 +13,7 @@ class SommererBotOne(Player):
         if self.money >= 2:
             bet = 2
         else:
-            bet = 0
+            bet = self.money
         return bet
 
     def wants_insurance(self):
@@ -44,7 +44,7 @@ class SommererBotTwo(Player):
         if self.money >= 2:
             bet = 2
         else:
-            bet = 0
+            bet = self.money
         return bet
 
     def wants_insurance(self):

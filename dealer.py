@@ -270,6 +270,7 @@ class Dealer(Player):
                     winnings = 0
                     text = 'lost'
                     player.timesBusted += 1
+                    player.timesLost += 1
                 elif hand.isBlackJack and not dealerHand.isBlackJack:
                     winnings = hand.bet * 2.5
                     text = 'won (Blackjack!)'
