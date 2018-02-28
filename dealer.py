@@ -72,6 +72,21 @@ class Dealer(Player):
         additionalBet = None
         return choice, additionalBet
 
+
+    def switch_shoe(self, shoe):
+        """
+        When we run a simulation instead of a game, we want to make sure that all of
+        dealers are using the same shoe and switching shoes at the same time.
+
+        :param shoe: a preshuffled shoe, ready to be delt from.
+        :type shoe: Shoe
+        :return:
+        """
+        self._shoe = shoe
+        for player in self._table.players:
+            player.reset_count()
+
+
     def take_bets(self):
         sleep(1)
         print('\n---betting---')
@@ -96,6 +111,8 @@ class Dealer(Player):
                 player.rake_out(betAmount)
                 self.rake_in(betAmount)
                 player.add_hand(Hand(betAmount))
+                player.handsPlayed += 1
+                player.totalWagers += betAmount
                 print(f"{name} is betting ${betAmount:0.2f}.")
             else:
                 print(f"{name} doesn't have enough money to bet ${betAmount:0.2f}. Sitting this hand out.")
@@ -111,6 +128,7 @@ class Dealer(Player):
         for player in self._playingPlayers:
             player.count(card)
 
+
     def deal(self):
         """
         Deal an initial 2 cards to each player and to the dealer.
@@ -120,8 +138,9 @@ class Dealer(Player):
         #
         if self._shoe.should_shuffle():
             self._shoe.shuffle()
-            for player in self._playingPlayers:
+            for player in self._table.players:
                 player.reset_count()
+            self._table.shuffling_shoe()
         #
         # Deal cards to each player.
         #
@@ -131,7 +150,6 @@ class Dealer(Player):
                 card = self._shoe.draw().flip()
                 player.hands[0].hit(card)
                 self.show_card_to_players(card)
-
         #
         # Deal yourself some cards.
         #
@@ -147,6 +165,7 @@ class Dealer(Player):
         self.show_card_to_players(card)
         self.hands[0].hit(self._shoe.draw().flip())
 
+
     def offer_insurance(self):
         self._playersWithInsurance = []
         if self.hands[0][1].name == 'ace':
@@ -154,6 +173,7 @@ class Dealer(Player):
                 if player.wants_insurance():
                     self._playersWithInsurance.append(player)
                     player.insurance = player.hands[0].bet
+                    player.timesInsurance += 1
 
     def play_hands(self):
         """
@@ -190,6 +210,7 @@ class Dealer(Player):
         self.show_card_to_players(card)
         hand.hit(card)
         print(f"{player.name} hit and received a {card} {hand}.")
+        player.timesHit += 1
 
     def player_split(self, player, hand, *args):
         if hand.can_split() and player.money >= hand.bet:
@@ -204,6 +225,9 @@ class Dealer(Player):
             self.show_card_to_players(card)
             hand.hit(card)
             print(f"{player.name} split and now has: \n   {hand}\n   {newHand}")
+            player.timesSplit += 1
+            player.handsPlayed += 1
+            player.totalWagers += hand.bet
         else:
             print("Sorry, you can't split this hand (pick again).")
 
@@ -213,22 +237,17 @@ class Dealer(Player):
             self.show_card_to_players(card)
             hand.double_down(card, additionalBet)
             self.rake_in(player.rake_out(additionalBet))
-            print(f"{player.name} hit and received a {card} {hand}.")
+            print(f"{player.name} doubled down and received a {card} {hand}.")
+            player.timesDoubled += 1
+            player.totalWagers += additionalBet
         else:
             print("Sorry, you can't double this hand (pick again).")
 
     def player_surrender(self, player, hand, *args):
         print('Sorry, surrender is not implemented (pick again).')
+        player.timesSurrendered += 1
 
-    def play_own_hand(self):
-        #
-        # Show the dealer's hole card to everyone. This allows players who
-        # are counting cards to include the dealer's hole card in their count.
-        #
-        holeCard = self.hands[0][1]
-        self.show_card_to_players(holeCard)
-        self.play_hands([self])
-
+    #TODO Make sure dealer shows hole card to players somewhere for counting.
     def play_own_hand(self):
         print('\n---dealer is playing---')
         playerOptions = {'s': self.player_stand,
@@ -240,8 +259,6 @@ class Dealer(Player):
             which_option = playerOptions[playerDecision]
             which_option(self, hand, additionalBet)
 
-
-
     def payout_hands(self):
         print('\n---results---')
         dealerHand = self.hands[0]
@@ -251,27 +268,36 @@ class Dealer(Player):
                 if hand.isBusted:
                     winnings = 0
                     text = 'lost'
+                    player.timesBusted += 1
                 elif hand.isBlackJack and not dealerHand.isBlackJack:
                     winnings = hand.bet * 2.5
                     text = 'won (Blackjack!)'
+                    player.timesWon += 1
+                    player.timesBlackjack += 1
                 elif hand.isBlackJack and dealerHand.isBlackJack:
                     winnings = hand.bet
                     text = 'pushed (blackjack) and lost'
+                    player.timesPushed += 1
+                    player.timesBlackjack += 1
                 elif not hand.isBlackJack and dealerHand.isBlackJack:
                     winnings = 0
                     text = 'lost'
+                    player.timesLost += 1
                 elif hand.value() == dealerHand.value():
                     winnings = hand.bet
                     text = 'pushed and lost'
+                    player.timesPushed += 1
                 elif dealerHand.isBusted:
                     winnings = hand.bet * 2
                     text = 'won (dealer busted)'
+                    player.timesWon += 1
                 elif hand.value() > dealerHand.value():
                     winnings = hand.bet * 2
                     text = 'won'
                 elif hand.value() < dealerHand.value():
                     winnings = 0
                     text = 'lost'
+                    player.timesLost += 1
                 player.rake_in(winnings)
                 self.rake_out(winnings)
                 winnings = abs(winnings-hand.bet)

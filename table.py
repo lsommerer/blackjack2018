@@ -16,6 +16,15 @@ class Table(object):
     def has_players(self):
         return len(self._players) > 0
 
+    def shuffling_shoe(self):
+        """
+        This method is called by a dealer when they are shuffling. If you are
+        simulating multiple dealers with the same shoe, you should replace all
+        dealer's shoes at this time. If you are playing a single game, then
+        no action is required.
+        """
+        pass
+
     def get_players(self):
         return self._players
 

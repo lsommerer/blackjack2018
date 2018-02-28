@@ -11,14 +11,17 @@ class Player(object):
         self.isVerbose = False
 
         self.handsPlayed = 0
+        self.totalWagers = 0
         self.timesHit = 0
         self.timesSplit = 0
-        self.timesDoubles = 0
+        self.timesDoubled = 0
         self.timesBlackjack = 0
         self.timesBusted = 0
         self.timesWon = 0
         self.timesLost = 0
         self.timesPushed = 0
+        self.timesInsurance = 0
+        self.timesSurrendered = 0
 
     def __str__(self):
         s = f'{self.name} ${self._chips:0.2f}: '
