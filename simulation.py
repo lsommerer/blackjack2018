@@ -40,10 +40,27 @@ class Simulation(object):
                 table.dealer.play_own_hand()
                 table.dealer.payout_hands()
 
+    def results(self):
         for table in self.tables:
             for player in table.players:
                 print(player)
-
+                print(f"   hands:      {player.handsPlayed}")
+                print(f"   wagers:    ${player.totalWagers:0.2f} (${player.totalWagers/player.handsPlayed:0.2f}/hand")
+                print()
+                print(f"   hit:        {player.timesHit} ({player.timesHit/player.handsPlayed} per hand)")
+                print(f"   split:      {player.timesSplit} ({player.timesSplit/player.handsPlayed*100}% of the time")
+                print(f"   doubled:    {player.timesDoubled} ({player.timesDoubled/player.handsPlayed*100}% of the time")
+                print()
+                print(f"   blackjack!: {player.timesBlackjack} ({player.timesBlackjack/player.handsPlayed*100}% of the time")
+                print(f"   busted:     {player.timesBusted} ({player.timesBusted/player.handsPlayed*100}% of the time")
+                print()
+                print(f"   won:        {player.timesWon} ({player.timesWon/player.handsPlayed*100}% of the time")
+                print(f"   lost:       {player.timesLost} ({player.timesLost/player.handsPlayed*100}% of the time")
+                print(f"   pushed:     {player.timesPushed} ({player.timesPushed/player.handsPlayed*100}% of the time")
+                print()
+                print(f"   insurance:  {player.timesInsurance} ({player.timesInsurance/player.handsPlayed*100}% of the time")
+                print(f"   surrender:  {player.timesSurrendered} ({player.timesSurrendered/player.handsPlayed*100}% of the time")
+                print()
 
 def main():
     simulation = Simulation()
@@ -57,6 +74,7 @@ def main():
     player2.sit(table2)
 
     simulation.run()
+    simulation.results()
 
 
 
