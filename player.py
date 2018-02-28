@@ -10,6 +10,16 @@ class Player(object):
         self.insurance = 0
         self.isVerbose = False
 
+        self.handsPlayed = 0
+        self.timesHit = 0
+        self.timesSplit = 0
+        self.timesDoubles = 0
+        self.timesBlackjack = 0
+        self.timesBusted = 0
+        self.timesWon = 0
+        self.timesLost = 0
+        self.timesPushed = 0
+
     def __str__(self):
         s = f'{self.name} ${self._chips:0.2f}: '
         if self._hands:
