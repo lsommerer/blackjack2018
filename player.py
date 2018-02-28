@@ -34,11 +34,9 @@ class Player(object):
 
     def sit(self, table):
         """Add the player to the list of players at a table."""
-        if type(table) == Table:
-            self._table = table
-            table.add_player(self)
-        else:
-            raise TypeError('Table parameter must be of type Table.')
+        self._table = table
+        table.add_player(self)
+
 
     def add_hand(self, hand):
         self._hands.append(hand)

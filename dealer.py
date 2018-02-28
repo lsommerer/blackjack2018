@@ -7,19 +7,17 @@ from time import sleep
 
 class Dealer(Player):
 
-    def __init__(self, name, money):
-        super().__init__('Bob the dealer', 1000000)
+    def __init__(self, name = 'Bob the dealer', money = 1000000, delay = 1):
+        super().__init__(name, money)
         self._playingPlayers = []
         self._playersWithInsurance = []
         self._shoe = Shoe()
+        self.delay = delay
 
     def sit(self, table):
         """Override the player sit method. so that the dealer sits on the right side of the table."""
-        if type(table) == Table:
-            self._table = table
-            table.add_dealer(self)
-        else:
-            raise TypeError('Table parameter must be of type Table.')
+        self._table = table
+        table.add_dealer(self)
 
     def bet_or_leave(self):
         """
@@ -33,7 +31,7 @@ class Dealer(Player):
         #
         pass
 
-    def want_insurance(self):
+    def wants_insurance(self):
         """
         Returns True if the player should buy insurance else return False.
 
@@ -88,7 +86,7 @@ class Dealer(Player):
 
 
     def take_bets(self):
-        sleep(1)
+        sleep(self.delay)
         print('\n---betting---')
         self._playingPlayers = []
         leavingPlayers = []
@@ -193,7 +191,7 @@ class Dealer(Player):
                 if hand.isBlackJack:
                     print(f"{player.name} has Blackjack! {hand}.")
                 while hand.can_hit():
-                    sleep(1)
+                    sleep(self.delay)
                     playerDecision, additionalBet = player.play(hand,dealerShowing)
                     if playerDecision in playerOptions:
                         which_option = playerOptions[playerDecision]
@@ -242,6 +240,9 @@ class Dealer(Player):
             player.totalWagers += additionalBet
         else:
             print("Sorry, you can't double this hand (pick again).")
+            print(hand)
+            print(player)
+            raise ValueError
 
     def player_surrender(self, player, hand, *args):
         print('Sorry, surrender is not implemented (pick again).')
@@ -263,7 +264,7 @@ class Dealer(Player):
         print('\n---results---')
         dealerHand = self.hands[0]
         for player in self._playingPlayers:
-            sleep(2)
+            sleep(self.delay * 2)
             for hand in player.hands:
                 if hand.isBusted:
                     winnings = 0
