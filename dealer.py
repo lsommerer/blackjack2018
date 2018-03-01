@@ -87,7 +87,7 @@ class Dealer(Player):
 
     def take_bets(self):
         sleep(self.delay)
-        print('\n---betting---')
+        if self.isVerbose: print('\n---betting---')
         self._playingPlayers = []
         leavingPlayers = []
         for player in self._table.players:
@@ -96,14 +96,14 @@ class Dealer(Player):
             # =  0: players is sitting this hand out
             # >  0: player is betting this amount
             #
-            print(player)
+            if self.isVerbose: print(player)
             betAmount = player.bet_or_leave()
             name = player.name.capitalize()
             if betAmount == -1:  # leaving table
                 leavingPlayers.append(player)
-                print(f"{name} is leaving the table with ${player.money:0.2f}.")
+                if self.isVerbose: print(f"{name} is leaving the table with ${player.money:0.2f}.")
             elif betAmount == 0:
-                print(f"{name} is sitting this hand out.")
+                if self.isVerbose: print(f"{name} is sitting this hand out.")
             elif betAmount > 0 and player.money >= betAmount:
                 self._playingPlayers.append(player)
                 player.rake_out(betAmount)
@@ -111,9 +111,9 @@ class Dealer(Player):
                 player.add_hand(Hand(betAmount))
                 player.handsPlayed += 1
                 player.totalWagers += betAmount
-                print(f"{name} is betting ${betAmount:0.2f}.")
+                if self.isVerbose: print(f"{name} is betting ${betAmount:0.2f}.")
             else:
-                print(f"{name} doesn't have enough money to bet ${betAmount:0.2f}. Sitting this hand out.")
+                if self.isVerbose: print(f"{name} doesn't have enough money to bet ${betAmount:0.2f}. Sitting this hand out.")
             for player in leavingPlayers:
                 self._table.leave_table(player)
 
@@ -184,12 +184,12 @@ class Dealer(Player):
                          'd': self.player_double_down,
                          'u': self.player_surrender
                          }
-        print('\n---players are playing---')
+        if self.isVerbose: print('\n---players are playing---')
         dealerShowing = self.hands[0][1]
         for player in self._playingPlayers:
             for hand in player.hands:
                 if hand.isBlackJack:
-                    print(f"{player.name} has Blackjack! {hand}.")
+                    if self.isVerbose: print(f"{player.name} has Blackjack! {hand}.")
                 while hand.can_hit():
                     sleep(self.delay)
                     playerDecision, additionalBet = player.play(hand,dealerShowing)
@@ -197,17 +197,17 @@ class Dealer(Player):
                         which_option = playerOptions[playerDecision]
                         which_option(player, hand, additionalBet)
                     else:
-                        print(f"I'm sorry, I don't know what '{playerDecision}' means.")
+                        if self.isVerbose: print(f"I'm sorry, I don't know what '{playerDecision}' means.")
 
     def player_stand(self, player, hand, *args):
         hand.stand()
-        print(f"{player.name} stands with {hand}.")
+        if self.isVerbose: print(f"{player.name} stands with {hand}.")
 
     def player_hit(self, player, hand, *args):
         card = self._shoe.draw().flip()
         self.show_card_to_players(card)
         hand.hit(card)
-        print(f"{player.name} hit and received a {card} {hand}.")
+        if self.isVerbose: print(f"{player.name} hit and received a {card} {hand}.")
         player.timesHit += 1
 
     def player_split(self, player, hand, *args):
@@ -222,12 +222,12 @@ class Dealer(Player):
             card = self._shoe.draw().flip()
             self.show_card_to_players(card)
             hand.hit(card)
-            print(f"{player.name} split and now has: \n   {hand}\n   {newHand}")
+            if self.isVerbose: print(f"{player.name} split and now has: \n   {hand}\n   {newHand}")
             player.timesSplit += 1
             player.handsPlayed += 1
             player.totalWagers += hand.bet
         else:
-            print("Sorry, you can't split this hand (pick again).")
+            if self.isVerbose: print("Sorry, you can't split this hand (pick again).")
 
     def player_double_down(self, player, hand, additionalBet):
         if hand.can_double() and is_number(additionalBet) and player.money >= additionalBet:
@@ -235,14 +235,11 @@ class Dealer(Player):
             self.show_card_to_players(card)
             hand.double_down(card, additionalBet)
             self.rake_in(player.rake_out(additionalBet))
-            print(f"{player.name} doubled down and received a {card} {hand}.")
+            if self.isVerbose: print(f"{player.name} doubled down and received a {card} {hand}.")
             player.timesDoubled += 1
             player.totalWagers += additionalBet
         else:
-            print("Sorry, you can't double this hand (pick again).")
-            print(hand)
-            print(player)
-            raise ValueError
+            if self.isVerbose: print("Sorry, you can't double this hand (pick again).")
 
     def player_surrender(self, player, hand, *args):
         print('Sorry, surrender is not implemented (pick again).')
@@ -250,7 +247,7 @@ class Dealer(Player):
 
     #TODO Make sure dealer shows hole card to players somewhere for counting.
     def play_own_hand(self):
-        print('\n---dealer is playing---')
+        if self.isVerbose: print('\n---dealer is playing---')
         playerOptions = {'s': self.player_stand,
                          'h': self.player_hit}
         hand = self.hands[0]
@@ -261,7 +258,7 @@ class Dealer(Player):
             which_option(self, hand, additionalBet)
 
     def payout_hands(self):
-        print('\n---results---')
+        if self.isVerbose: print('\n---results---')
         dealerHand = self.hands[0]
         for player in self._playingPlayers:
             sleep(self.delay * 2)
@@ -303,7 +300,7 @@ class Dealer(Player):
                 player.rake_in(winnings)
                 self.rake_out(winnings)
                 winnings = abs(winnings-hand.bet)
-                print(f"{player.name} {text} ${winnings:0.2f} on {hand}.")
+                if self.isVerbose: print(f"{player.name} {text} ${winnings:0.2f} on {hand}.")
         #
         # Payout any insurance bets.
         #
@@ -312,9 +309,9 @@ class Dealer(Player):
                 winnings = player.insurance * 2
                 player.rake_in(winnings)
                 self.rake_out(winnings)
-                print(f"{player.name} won ${player.insurance:0.2f} on the insurance bet.")
+                if self.isVerbose: print(f"{player.name} won ${player.insurance:0.2f} on the insurance bet.")
             else:
-                print(f"{player.name} lost ${player.insurance:0.2f} on the insurance bet.")
+                if self.isVerbose: print(f"{player.name} lost ${player.insurance:0.2f} on the insurance bet.")
         #
         # Clear the table and get ready for the next round.
         #
@@ -322,7 +319,7 @@ class Dealer(Player):
             player.discard_hands()
             player.insurance = 0
         self.discard_hands()
-        print('---results complete---')
+        if self.isVerbose: print('---results complete---')
 
 
 

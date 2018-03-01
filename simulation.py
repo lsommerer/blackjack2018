@@ -31,7 +31,6 @@ class Simulation(object):
         return hasPlayers
 
     def run(self):
-        numberOfRounds = 1000
         while self.has_players():
             for table in self.tables:
                 table.dealer.take_bets()
@@ -42,6 +41,7 @@ class Simulation(object):
                 table.dealer.payout_hands()
 
     def results(self):
+        print('*\n* Final Statistics\n*\n')
         for table in self.tables:
             for player in table.players:
                 print(player)
@@ -67,11 +67,11 @@ def main():
     seed(1)
     simulation = Simulation()
 
-    table1 = VirtualTable(simulation)
+    table1 = VirtualTable(simulation, False)
     player1 = SommererBotOne()
     player1.sit(table1)
 
-    table2 = VirtualTable(simulation)
+    table2 = VirtualTable(simulation, False)
     player2 = SommererBotTwo()
     player2.sit(table2)
 
@@ -80,5 +80,5 @@ def main():
     simulation.results()
 
 
-
-main()
+if __name__ == 'main':
+    main()
