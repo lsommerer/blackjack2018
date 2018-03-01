@@ -65,14 +65,15 @@ class Simulation(object):
 
 def main():
     seed(1)
+    money = 1000
     simulation = Simulation()
 
     table1 = VirtualTable(simulation, False)
-    player1 = SommererBotOne()
+    player1 = SommererBotOne(money)
     player1.sit(table1)
 
     table2 = VirtualTable(simulation, False)
-    player2 = SommererBotTwo()
+    player2 = SommererBotTwo(money)
     player2.sit(table2)
 
     simulation.switch_all_shoes()
@@ -80,5 +81,5 @@ def main():
     simulation.results()
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     main()

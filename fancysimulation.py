@@ -11,7 +11,7 @@ from random import seed
 def main():
     global simulation
     simulation = Simulation()
-    seed(1)
+    seed(2)
 
     table1 = VirtualTable(simulation, False)
     player1 = SommererBotOne(100)
@@ -135,6 +135,7 @@ def lost2():
     global simulation
     table = 2
     return simulation.tables[table].players[0].timesLost
+
 def pushed0():
     global simulation
     table = 0
