@@ -6,29 +6,29 @@ from asciimatics.screen import Screen
 from simulation import Simulation
 from virtualtable import VirtualTable
 from sommererbots import SommererBotOne, SommererBotTwo, SommererBotThree
+from kolliparabots import Ian
 from random import seed
 
 MAX_WON = 100
 MAX_LOST = 100
 MAX_PUSH = 50
-MAX_MONEY = 150
+MAX_MONEY = 300
 STARTING_MONEY = 100
 
 def main():
     global simulation
     simulation = Simulation()
-    verbose = False
     #seed(2)
 
-    table1 = VirtualTable(simulation, verbose)
-    player1 = SommererBotOne(STARTING_MONEY)
+    table1 = VirtualTable(simulation)
+    player1 = Ian(STARTING_MONEY)
     player1.sit(table1)
 
-    table2 = VirtualTable(simulation, verbose)
+    table2 = VirtualTable(simulation)
     player2 = SommererBotTwo(STARTING_MONEY)
     player2.sit(table2)
 
-    table3 = VirtualTable(simulation, verbose)
+    table3 = VirtualTable(simulation)
     player3 = SommererBotThree(STARTING_MONEY)
     player3.sit(table3)
 
@@ -51,7 +51,7 @@ def graphs(screen):
                        scale = MAX_MONEY,
                        labels=True,
                        axes=BarChart.X_AXIS,
-                       intervals = 25,
+                       intervals = MAX_MONEY/4,
                        keys = names),
               x=3, y=2, transparent=False, speed=2)
 

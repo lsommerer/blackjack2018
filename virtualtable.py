@@ -6,12 +6,14 @@ class VirtualTable(Table):
     This Table Class is for use when you are simulating blackjack games to test various player types.
     """
 
-    def __init__(self, simulation, verbose = True):
+    def __init__(self, simulation):
         super().__init__()
         simulation.add_table(self)
         self._simulation = simulation
-        dealer = Dealer('Dealer', 100000, 0)
-        dealer.isVerbose = verbose
+        bankroll = 10000
+        delay = 0
+        verbose = False
+        dealer = Dealer('Dealer', bankroll, delay, verbose)
         dealer.sit(self)
 
     def shuffling_shoe(self):

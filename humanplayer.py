@@ -9,7 +9,7 @@ class HumanPlayer(Player):
         to bet, sit this hand out by entering zero for a bet, or leave the table by
         entering -1.
         """
-        prompt = "Enter your bet ('0' to sit out hand or '-1' to quit):"
+        prompt = f"{self.name}, enter your bet ('0' to sit out hand or '-1' to quit):"
         #TODO Fix this is pretty sketch way to get a valid input for bet amount.
         bet = -0.5
         while (bet > -1) and (bet < 0):
@@ -25,7 +25,7 @@ class HumanPlayer(Player):
         receives their cards and after the dealer has received his cards. It is
         only called if the dealer is showing an ace (the dealer might have blackjack).
         """
-        return get_boolean('Do you want insurance? (The dealer has an ace showing)')
+        return get_boolean(f'{self.name}, do you want insurance? (The dealer has an ace showing)')
 
 
     def play(self, hand, dealerShowing):
@@ -54,9 +54,9 @@ class HumanPlayer(Player):
         assert len(allPlays) >0, "player.play() shouldn't be called if there are no legal plays."
 
         validPlays = allPlays.keys()
-        print(f'You have {hand}.')
+        print(f'\n{self.name} has {hand}.')
         print(f'The dealer has a {dealerShowing} showing.')
-        validMenu = 'You can: ' + '   '.join(allPlays.values())
+        validMenu = f'{self.name} can: ' + '   '.join(allPlays.values())
 
         choice = 'getInMyWhileLoop'
         while choice not in validPlays:
@@ -69,7 +69,7 @@ class HumanPlayer(Player):
             maxBet = hand.bet
             if self._chips < maxBet:
                 maxBet = self._chips
-            prompt = f'How much do you want to bet? [max = ${maxBet:0.2f}]'
+            prompt = f'{self.player}, how much do you want to bet? [max = ${maxBet:0.2f}]'
             additionalBet = get_number_between(0, maxBet, prompt)
 
         return choice, additionalBet

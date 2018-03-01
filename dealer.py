@@ -7,12 +7,13 @@ from time import sleep
 
 class Dealer(Player):
 
-    def __init__(self, name = 'Bob the dealer', money = 1000000, delay = 1):
+    def __init__(self, name = 'Bob the dealer', money = 1000000, delay = 1, verbose = True):
         super().__init__(name, money)
         self._playingPlayers = []
         self._playersWithInsurance = []
         self._shoe = Shoe()
         self.delay = delay
+        self.isVerbose = verbose
 
     def sit(self, table):
         """Override the player sit method. so that the dealer sits on the right side of the table."""
@@ -96,7 +97,7 @@ class Dealer(Player):
             # =  0: players is sitting this hand out
             # >  0: player is betting this amount
             #
-            if self.isVerbose: print(player)
+            if self.isVerbose: print(f'\n{player}')
             betAmount = player.bet_or_leave()
             name = player.name.capitalize()
             if betAmount == -1:  # leaving table
@@ -165,12 +166,13 @@ class Dealer(Player):
 
 
     def offer_insurance(self):
+        print('\n')
         self._playersWithInsurance = []
         if self.hands[0][1].name == 'ace':
             for player in self._playingPlayers:
                 if player.wants_insurance():
                     self._playersWithInsurance.append(player)
-                    player.insurance = player.hands[0].bet
+                    player.insurance = player.hands[0].bet/2
                     player.timesInsurance += 1
 
     def play_hands(self):
