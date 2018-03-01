@@ -80,7 +80,7 @@ class SommererBotThree(Player):
 
     def play(self, hand, dealerShowing):
         additionalBet = None
-        if hand.can_double() and self.money >= hand.bet and hand.value in [9, 10, 110]:
+        if hand.can_double() and self.money >= hand.bet and hand.value() in [9, 10, 11]:
             choice = 'd'
             additionalBet = hand.bet
         elif hand.value() < 17:

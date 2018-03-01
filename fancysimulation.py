@@ -34,8 +34,8 @@ def graphs(screen):
     names = [simulation.tables[0].players[0].name,
              simulation.tables[1].players[0].name,
              simulation.tables[2].players[0].name]
-    graph = Print(screen,
-              BarChart(15, 100, [money0, money1, money2],
+    money = Print(screen,
+              BarChart(14, 100, [money0, money1, money2],
                        char="=",
                        gradient=[(25, Screen.COLOUR_RED),
                                  (80, Screen.COLOUR_YELLOW),
@@ -47,8 +47,27 @@ def graphs(screen):
                        keys = names),
               x=3, y=2, transparent=False, speed=2)
 
+    won = Print(screen,
+              BarChart(14, 25, [won0, won1, won2],
+                       char="W",
+                       keys = names,
+                       scale = 200),
+              x=3, y=20, transparent=False, speed=2)
+
+    lost = Print(screen,
+              BarChart(14, 15, [lost0, lost1, lost2],
+                       char="L",
+                       scale = 200),
+              x=33, y=20, transparent=False, speed=2)
+
+    pushed = Print(screen,
+              BarChart(14, 15, [pushed0, pushed1, pushed2],
+                       char="P",
+                       scale = 100),
+              x=53, y=20, transparent=False, speed=2)
+
     scenes = []
-    scenes.append(Scene([graph], duration=200))
+    scenes.append(Scene([money, won, lost, pushed], duration=200))
     while simulation.has_players():
         screen.play(scenes, repeat=False)
 
@@ -86,6 +105,50 @@ def money2():
     simulation.tables[table].dealer.payout_hands()
     return simulation.tables[table].players[0].money
 
+
+def won0():
+    global simulation
+    table = 0
+    return simulation.tables[table].players[0].timesWon
+
+def won1():
+    global simulation
+    table = 1
+    return simulation.tables[table].players[0].timesWon
+
+def won2():
+    global simulation
+    table = 2
+    return simulation.tables[table].players[0].timesWon
+
+def lost0():
+    global simulation
+    table = 0
+    return simulation.tables[table].players[0].timesLost
+
+def lost1():
+    global simulation
+    table = 1
+    return simulation.tables[table].players[0].timesLost
+
+def lost2():
+    global simulation
+    table = 2
+    return simulation.tables[table].players[0].timesLost
+def pushed0():
+    global simulation
+    table = 0
+    return simulation.tables[table].players[0].timesPushed
+
+def pushed1():
+    global simulation
+    table = 1
+    return simulation.tables[table].players[0].timesPushed
+
+def pushed2():
+    global simulation
+    table = 2
+    return simulation.tables[table].players[0].timesPushed
 
 
 main()
