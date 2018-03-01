@@ -8,27 +8,28 @@ from virtualtable import VirtualTable
 from sommererbots import SommererBotOne, SommererBotTwo, SommererBotThree
 from random import seed
 
-MAX_WON = 200
-MAX_LOST = 200
-MAX_PUSH = 100
+MAX_WON = 100
+MAX_LOST = 100
+MAX_PUSH = 50
 MAX_MONEY = 150
+STARTING_MONEY = 100
 
 def main():
     global simulation
     simulation = Simulation()
-    money = 100
+    verbose = False
     #seed(2)
 
-    table1 = VirtualTable(simulation, False)
-    player1 = SommererBotOne(money)
+    table1 = VirtualTable(simulation, verbose)
+    player1 = SommererBotOne(STARTING_MONEY)
     player1.sit(table1)
 
-    table2 = VirtualTable(simulation, False)
-    player2 = SommererBotTwo(money)
+    table2 = VirtualTable(simulation, verbose)
+    player2 = SommererBotTwo(STARTING_MONEY)
     player2.sit(table2)
 
-    table3 = VirtualTable(simulation, False)
-    player3 = SommererBotThree(money)
+    table3 = VirtualTable(simulation, verbose)
+    player3 = SommererBotThree(STARTING_MONEY)
     player3.sit(table3)
 
     simulation.switch_all_shoes()
@@ -43,10 +44,10 @@ def graphs(screen):
     money = Print(screen,
               BarChart(14, 100, [money0, money1, money2],
                        char="=",
-                       gradient=[(25, Screen.COLOUR_RED),
-                                 (75, Screen.COLOUR_YELLOW),
-                                 (100, Screen.COLOUR_WHITE),
-                                 (150, Screen.COLOUR_GREEN)],
+                       gradient=[(STARTING_MONEY/4, Screen.COLOUR_RED),
+                                 (STARTING_MONEY/4*3, Screen.COLOUR_YELLOW),
+                                 (STARTING_MONEY, Screen.COLOUR_WHITE),
+                                 (MAX_MONEY, Screen.COLOUR_GREEN)],
                        scale = MAX_MONEY,
                        labels=True,
                        axes=BarChart.X_AXIS,
