@@ -11,18 +11,19 @@ from random import seed
 def main():
     global simulation
     simulation = Simulation()
-    seed(2)
+    money = 100
+    #seed(2)
 
     table1 = VirtualTable(simulation, False)
-    player1 = SommererBotOne(100)
+    player1 = SommererBotOne(money)
     player1.sit(table1)
 
     table2 = VirtualTable(simulation, False)
-    player2 = SommererBotTwo(100)
+    player2 = SommererBotTwo(money)
     player2.sit(table2)
 
     table3 = VirtualTable(simulation, False)
-    player3 = SommererBotThree(100)
+    player3 = SommererBotThree(money)
     player3.sit(table3)
 
     simulation.switch_all_shoes()
