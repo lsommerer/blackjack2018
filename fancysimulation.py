@@ -8,6 +8,11 @@ from virtualtable import VirtualTable
 from sommererbots import SommererBotOne, SommererBotTwo, SommererBotThree
 from random import seed
 
+MAX_WON = 200
+MAX_LOST = 200
+MAX_PUSH = 100
+MAX_MONEY = 150
+
 def main():
     global simulation
     simulation = Simulation()
@@ -39,9 +44,10 @@ def graphs(screen):
               BarChart(14, 100, [money0, money1, money2],
                        char="=",
                        gradient=[(25, Screen.COLOUR_RED),
-                                 (80, Screen.COLOUR_YELLOW),
-                                 (100, Screen.COLOUR_GREEN)],
-                       scale = 150,
+                                 (75, Screen.COLOUR_YELLOW),
+                                 (100, Screen.COLOUR_WHITE),
+                                 (150, Screen.COLOUR_GREEN)],
+                       scale = MAX_MONEY,
                        labels=True,
                        axes=BarChart.X_AXIS,
                        intervals = 25,
@@ -52,19 +58,28 @@ def graphs(screen):
               BarChart(14, 25, [won0, won1, won2],
                        char="W",
                        keys = names,
-                       scale = 200),
+                       labels=True,
+                       axes=BarChart.X_AXIS,
+                       intervals = MAX_WON,
+                       scale = MAX_WON),
               x=3, y=20, transparent=False, speed=2)
 
     lost = Print(screen,
               BarChart(14, 15, [lost0, lost1, lost2],
                        char="L",
-                       scale = 200),
+                       labels=True,
+                       axes=BarChart.X_AXIS,
+                       intervals = MAX_LOST,
+                       scale = MAX_LOST),
               x=33, y=20, transparent=False, speed=2)
 
     pushed = Print(screen,
               BarChart(14, 15, [pushed0, pushed1, pushed2],
                        char="P",
-                       scale = 100),
+                       labels=True,
+                       axes=BarChart.X_AXIS,
+                       intervals = MAX_PUSH,
+                       scale = MAX_PUSH),
               x=53, y=20, transparent=False, speed=2)
 
     scenes = []
@@ -82,7 +97,10 @@ def money0():
     simulation.tables[table].dealer.play_hands()
     simulation.tables[table].dealer.play_own_hand()
     simulation.tables[table].dealer.payout_hands()
-    return simulation.tables[table].players[0].money
+    money = simulation.tables[table].players[0].money
+    if money > MAX_MONEY:
+        money = MAX_MONEY
+    return money
 
 def money1():
     global simulation
@@ -93,7 +111,10 @@ def money1():
     simulation.tables[table].dealer.play_hands()
     simulation.tables[table].dealer.play_own_hand()
     simulation.tables[table].dealer.payout_hands()
-    return simulation.tables[table].players[0].money
+    money = simulation.tables[table].players[0].money
+    if money > MAX_MONEY:
+        money = MAX_MONEY
+    return money
 
 def money2():
     global simulation
@@ -104,53 +125,83 @@ def money2():
     simulation.tables[table].dealer.play_hands()
     simulation.tables[table].dealer.play_own_hand()
     simulation.tables[table].dealer.payout_hands()
-    return simulation.tables[table].players[0].money
+    money = simulation.tables[table].players[0].money
+    if money > MAX_MONEY:
+        money = MAX_MONEY
+    return money
 
 
 def won0():
     global simulation
     table = 0
-    return simulation.tables[table].players[0].timesWon
+    won = simulation.tables[table].players[0].timesWon
+    if won > MAX_WON:
+        won = MAX_WON
+    return won
 
 def won1():
     global simulation
     table = 1
-    return simulation.tables[table].players[0].timesWon
+    won = simulation.tables[table].players[0].timesWon
+    if won > MAX_WON:
+        won = MAX_WON
+    return won
 
 def won2():
     global simulation
     table = 2
-    return simulation.tables[table].players[0].timesWon
+    won = simulation.tables[table].players[0].timesWon
+    if won > MAX_WON:
+        won = MAX_WON
+    return won
 
 def lost0():
     global simulation
     table = 0
-    return simulation.tables[table].players[0].timesLost
+    lost = simulation.tables[table].players[0].timesWon
+    if lost > MAX_LOST:
+        lost = MAX_LOST
+    return lost
 
 def lost1():
     global simulation
     table = 1
-    return simulation.tables[table].players[0].timesLost
+    lost = simulation.tables[table].players[0].timesWon
+    if lost > MAX_LOST:
+        lost = MAX_LOST
+    return lost
 
 def lost2():
     global simulation
     table = 2
-    return simulation.tables[table].players[0].timesLost
+    lost = simulation.tables[table].players[0].timesLost
+    if lost > MAX_LOST:
+        lost = MAX_LOST
+    return lost
 
 def pushed0():
     global simulation
     table = 0
-    return simulation.tables[table].players[0].timesPushed
+    pushed = simulation.tables[table].players[0].timesPushed
+    if pushed > MAX_PUSH:
+        pushed = MAX_PUSH
+    return pushed
 
 def pushed1():
     global simulation
     table = 1
-    return simulation.tables[table].players[0].timesPushed
+    pushed = simulation.tables[table].players[0].timesPushed
+    if pushed > MAX_PUSH:
+        pushed = MAX_PUSH
+    return pushed
 
 def pushed2():
     global simulation
     table = 2
-    return simulation.tables[table].players[0].timesPushed
+    pushed = simulation.tables[table].players[0].timesPushed
+    if pushed > MAX_PUSH:
+        pushed = MAX_PUSH
+    return pushed
 
 
 main()
