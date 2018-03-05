@@ -42,13 +42,15 @@ def main():
         table.results()
 
 def setup_bots(bots):
+    """Execute these commands to setup each bot at a table."""
     global simulation
     for number, bot in enumerate(bots):
         number += 1
-        exec(f'table{number} = VirtualTable(simulation)')
-        exec(f'player{number} = {bot}(STARTING_MONEY)')
-        exec(f'player{number}.sit(table{number})')
-        exec
+        exec(f'''
+table{number} = VirtualTable(simulation)
+player{number} = {bot}(STARTING_MONEY)
+player{number}.sit(table{number})
+              ''')
 
 
 def graphs(screen):
