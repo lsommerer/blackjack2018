@@ -22,6 +22,7 @@ class Player(object):
         self.timesPushed = 0
         self.timesInsurance = 0
         self.timesSurrendered = 0
+        self.timesAbend = 0
 
     def __str__(self):
         s = f'{self.name} ${self._chips:0.2f}: '

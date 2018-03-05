@@ -10,15 +10,15 @@ from kolliparabots import Ian
 from random import seed
 
 MAX_WON = 100
-MAX_LOST = 100
+MAX_LOST = 200
 MAX_PUSH = 50
 MAX_MONEY = 300
-STARTING_MONEY = 100
+STARTING_MONEY = 150
 
 def main():
     global simulation
     simulation = Simulation()
-    #seed(2)
+    seed(2)
 
     table1 = VirtualTable(simulation)
     player1 = Ian(STARTING_MONEY)
@@ -92,43 +92,55 @@ def graphs(screen):
 def money0():
     global simulation
     table = 0
-    simulation.tables[table].dealer.take_bets()
-    simulation.tables[table].dealer.deal()
-    simulation.tables[table].dealer.offer_insurance()
-    simulation.tables[table].dealer.play_hands()
-    simulation.tables[table].dealer.play_own_hand()
-    simulation.tables[table].dealer.payout_hands()
-    money = simulation.tables[table].players[0].money
-    if money > MAX_MONEY:
-        money = MAX_MONEY
+    try:
+        simulation.tables[table].dealer.take_bets()
+        simulation.tables[table].dealer.deal()
+        simulation.tables[table].dealer.offer_insurance()
+        simulation.tables[table].dealer.play_hands()
+        simulation.tables[table].dealer.play_own_hand()
+        simulation.tables[table].dealer.payout_hands()
+        money = simulation.tables[table].players[0].money
+        if money > MAX_MONEY:
+            money = MAX_MONEY
+    except:
+        money = 0
+        simulation.tables[table].players[0].timesAbend += 1
     return money
 
 def money1():
     global simulation
     table = 1
-    simulation.tables[table].dealer.take_bets()
-    simulation.tables[table].dealer.deal()
-    simulation.tables[table].dealer.offer_insurance()
-    simulation.tables[table].dealer.play_hands()
-    simulation.tables[table].dealer.play_own_hand()
-    simulation.tables[table].dealer.payout_hands()
-    money = simulation.tables[table].players[0].money
-    if money > MAX_MONEY:
-        money = MAX_MONEY
+    try:
+        simulation.tables[table].dealer.take_bets()
+        simulation.tables[table].dealer.deal()
+        simulation.tables[table].dealer.offer_insurance()
+        simulation.tables[table].dealer.play_hands()
+        simulation.tables[table].dealer.play_own_hand()
+        simulation.tables[table].dealer.payout_hands()
+        money = simulation.tables[table].players[0].money
+        if money > MAX_MONEY:
+            money = MAX_MONEY
+    except:
+        money = 0
+        simulation.tables[table].players[0].timesAbend += 1
     return money
 
 def money2():
     global simulation
     table = 2
-    simulation.tables[table].dealer.take_bets()
-    simulation.tables[table].dealer.deal()
-    simulation.tables[table].dealer.offer_insurance()
-    simulation.tables[table].dealer.play_hands()
-    simulation.tables[table].dealer.play_own_hand()
-    simulation.tables[table].dealer.payout_hands()
-    money = simulation.tables[table].players[0].money
-    if money > MAX_MONEY:
-        money = MAX_MONEY
+    try:
+        simulation.tables[table].dealer.take_bets()
+        simulation.tables[table].dealer.deal()
+        simulation.tables[table].dealer.offer_insurance()
+        simulation.tables[table].dealer.play_hands()
+        simulation.tables[table].dealer.play_own_hand()
+        simulation.tables[table].dealer.payout_hands()
+        money = simulation.tables[table].players[0].money
+        if money > MAX_MONEY:
+            money = MAX_MONEY
+    except:
+        money = 0
+        simulation.tables[table].players[0].timesAbend += 1
     return money
 
 

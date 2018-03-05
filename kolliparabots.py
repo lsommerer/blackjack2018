@@ -1,7 +1,5 @@
 from player import Player
 from random import *
-from hand import Hand
-from card import Card
 
 class Ian(Player):
     def __init__(self, money=1000):

@@ -47,6 +47,7 @@ class Simulation(object):
                 print(player)
                 print(f"   hands:      {player.handsPlayed}")
                 print(f"   wagers:    ${player.totalWagers:0.2f} (${player.totalWagers/player.handsPlayed:0.2f}/hand)")
+                print(f"   abends:    {player.timesAbend} ({player.timesAbend/player.handsPlayed:0.2f}/hand)")
                 print()
                 print(f"   hit:        {player.timesHit} ({player.timesHit/player.handsPlayed} per hand)")
                 print(f"   split:      {player.timesSplit} ({player.timesSplit/player.handsPlayed*100:.0f}% of the time)")
