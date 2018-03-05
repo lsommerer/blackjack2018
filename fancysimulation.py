@@ -7,6 +7,7 @@ from simulation import Simulation
 from virtualtable import VirtualTable
 from sommererbots import SommererBotOne, SommererBotTwo, SommererBotThree
 from kolliparabots import Ian
+from ziembots import BadRachelBot
 from random import seed
 
 MAX_WON = 100
@@ -18,23 +19,37 @@ STARTING_MONEY = 150
 def main():
     global simulation
     simulation = Simulation()
-    seed(2)
+    seed(5)
 
-    table1 = VirtualTable(simulation)
-    player1 = Ian(STARTING_MONEY)
-    player1.sit(table1)
+#    table1 = VirtualTable(simulation)
+#    player1 = BadRachelBot(STARTING_MONEY)
+#    player1.sit(table1)
+#
+#    table2 = VirtualTable(simulation)
+#    player2 = BadRachelBot(STARTING_MONEY)
+#    player2.sit(table2)
+#
+#    table3 = VirtualTable(simulation)
+#    player3 = SommererBotThree(STARTING_MONEY)
+#    player3.sit(table3)
 
-    table2 = VirtualTable(simulation)
-    player2 = SommererBotTwo(STARTING_MONEY)
-    player2.sit(table2)
-
-    table3 = VirtualTable(simulation)
-    player3 = SommererBotThree(STARTING_MONEY)
-    player3.sit(table3)
+    setup_bots(['BadRachelBot', 'BadRachelBot', 'SommererBotThree'])
 
     simulation.switch_all_shoes()
     Screen.wrapper(graphs)
-    simulation.results()
+    print('*\n* Final Statistics\n*\n')
+    for table in simulation.tables:
+        table.results()
+
+def setup_bots(bots):
+    global simulation
+    for number, bot in enumerate(bots):
+        number += 1
+        exec(f'table{number} = VirtualTable(simulation)')
+        exec(f'player{number} = {bot}(STARTING_MONEY)')
+        exec(f'player{number}.sit(table{number})')
+        exec
+
 
 def graphs(screen):
     global simulation
@@ -53,7 +68,7 @@ def graphs(screen):
                        axes=BarChart.X_AXIS,
                        intervals = MAX_MONEY/4,
                        keys = names),
-              x=3, y=2, transparent=False, speed=2)
+              x=3, y=2, transparent=False, speed=1)
 
     won = Print(screen,
               BarChart(14, 25, [won0, won1, won2],
@@ -63,7 +78,7 @@ def graphs(screen):
                        axes=BarChart.X_AXIS,
                        intervals = MAX_WON,
                        scale = MAX_WON),
-              x=3, y=20, transparent=False, speed=2)
+              x=3, y=20, transparent=False, speed=1)
 
     lost = Print(screen,
               BarChart(14, 15, [lost0, lost1, lost2],
@@ -72,7 +87,7 @@ def graphs(screen):
                        axes=BarChart.X_AXIS,
                        intervals = MAX_LOST,
                        scale = MAX_LOST),
-              x=33, y=20, transparent=False, speed=2)
+              x=33, y=20, transparent=False, speed=1)
 
     pushed = Print(screen,
               BarChart(14, 15, [pushed0, pushed1, pushed2],
@@ -81,10 +96,10 @@ def graphs(screen):
                        axes=BarChart.X_AXIS,
                        intervals = MAX_PUSH,
                        scale = MAX_PUSH),
-              x=53, y=20, transparent=False, speed=2)
+              x=53, y=20, transparent=False, speed=1)
 
     scenes = []
-    scenes.append(Scene([money, won, lost, pushed], duration=200))
+    scenes.append(Scene([money, won, lost, pushed], duration=50))
     while simulation.has_players():
         screen.play(scenes, repeat=False)
 
@@ -99,7 +114,10 @@ def money0():
         simulation.tables[table].dealer.play_hands()
         simulation.tables[table].dealer.play_own_hand()
         simulation.tables[table].dealer.payout_hands()
-        money = simulation.tables[table].players[0].money
+        if simulation.tables[table].has_players():
+            money = simulation.tables[table].players[0].money
+        else:
+            money = simulation.tables[table].finishedPlayers[0].money
         if money > MAX_MONEY:
             money = MAX_MONEY
     except:
@@ -117,7 +135,10 @@ def money1():
         simulation.tables[table].dealer.play_hands()
         simulation.tables[table].dealer.play_own_hand()
         simulation.tables[table].dealer.payout_hands()
-        money = simulation.tables[table].players[0].money
+        if simulation.tables[table].has_players():
+            money = simulation.tables[table].players[0].money
+        else:
+            money = simulation.tables[table].finishedPlayers[0].money
         if money > MAX_MONEY:
             money = MAX_MONEY
     except:
@@ -135,7 +156,10 @@ def money2():
         simulation.tables[table].dealer.play_hands()
         simulation.tables[table].dealer.play_own_hand()
         simulation.tables[table].dealer.payout_hands()
-        money = simulation.tables[table].players[0].money
+        if simulation.tables[table].has_players():
+            money = simulation.tables[table].players[0].money
+        else:
+            money = simulation.tables[table].finishedPlayers[0].money
         if money > MAX_MONEY:
             money = MAX_MONEY
     except:
@@ -147,7 +171,10 @@ def money2():
 def won0():
     global simulation
     table = 0
-    won = simulation.tables[table].players[0].timesWon
+    if simulation.tables[table].has_players():
+        won = simulation.tables[table].players[0].timesWon
+    else:
+        won = simulation.tables[table].finishedPlayers[0].timesWon
     if won > MAX_WON:
         won = MAX_WON
     return won
@@ -155,7 +182,10 @@ def won0():
 def won1():
     global simulation
     table = 1
-    won = simulation.tables[table].players[0].timesWon
+    if simulation.tables[table].has_players():
+        won = simulation.tables[table].players[0].timesWon
+    else:
+        won = simulation.tables[table].finishedPlayers[0].timesWon
     if won > MAX_WON:
         won = MAX_WON
     return won
@@ -163,7 +193,10 @@ def won1():
 def won2():
     global simulation
     table = 2
-    won = simulation.tables[table].players[0].timesWon
+    if simulation.tables[table].has_players():
+        won = simulation.tables[table].players[0].timesWon
+    else:
+        won = simulation.tables[table].finishedPlayers[0].timesWon
     if won > MAX_WON:
         won = MAX_WON
     return won
@@ -171,7 +204,10 @@ def won2():
 def lost0():
     global simulation
     table = 0
-    lost = simulation.tables[table].players[0].timesWon
+    if simulation.tables[table].has_players():
+        lost = simulation.tables[table].players[0].timesLost
+    else:
+        lost = simulation.tables[table].finishedPlayers[0].timesLost
     if lost > MAX_LOST:
         lost = MAX_LOST
     return lost
@@ -179,7 +215,10 @@ def lost0():
 def lost1():
     global simulation
     table = 1
-    lost = simulation.tables[table].players[0].timesWon
+    if simulation.tables[table].has_players():
+        lost = simulation.tables[table].players[0].timesLost
+    else:
+        lost = simulation.tables[table].finishedPlayers[0].timesLost
     if lost > MAX_LOST:
         lost = MAX_LOST
     return lost
@@ -187,7 +226,10 @@ def lost1():
 def lost2():
     global simulation
     table = 2
-    lost = simulation.tables[table].players[0].timesLost
+    if simulation.tables[table].has_players():
+        lost = simulation.tables[table].players[0].timesLost
+    else:
+        lost = simulation.tables[table].finishedPlayers[0].timesLost
     if lost > MAX_LOST:
         lost = MAX_LOST
     return lost
@@ -195,7 +237,10 @@ def lost2():
 def pushed0():
     global simulation
     table = 0
-    pushed = simulation.tables[table].players[0].timesPushed
+    if simulation.tables[table].has_players():
+        pushed = simulation.tables[table].players[0].timesPushed
+    else:
+        pushed = simulation.tables[table].finishedPlayers[0].timesPushed
     if pushed > MAX_PUSH:
         pushed = MAX_PUSH
     return pushed
@@ -203,7 +248,10 @@ def pushed0():
 def pushed1():
     global simulation
     table = 1
-    pushed = simulation.tables[table].players[0].timesPushed
+    if simulation.tables[table].has_players():
+        pushed = simulation.tables[table].players[0].timesPushed
+    else:
+        pushed = simulation.tables[table].finishedPlayers[0].timesPushed
     if pushed > MAX_PUSH:
         pushed = MAX_PUSH
     return pushed
@@ -211,7 +259,10 @@ def pushed1():
 def pushed2():
     global simulation
     table = 2
-    pushed = simulation.tables[table].players[0].timesPushed
+    if simulation.tables[table].has_players():
+        pushed = simulation.tables[table].players[0].timesPushed
+    else:
+        pushed = simulation.tables[table].finishedPlayers[0].timesPushed
     if pushed > MAX_PUSH:
         pushed = MAX_PUSH
     return pushed

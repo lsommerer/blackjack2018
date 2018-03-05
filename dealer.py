@@ -100,7 +100,7 @@ class Dealer(Player):
             if self.isVerbose: print(f'\n{player}')
             betAmount = player.bet_or_leave()
             name = player.name.capitalize()
-            if betAmount == -1:  # leaving table
+            if betAmount == -1 or player.money < 1:  # leaving table
                 leavingPlayers.append(player)
                 if self.isVerbose: print(f"{name} is leaving the table with ${player.money:0.2f}.")
             elif betAmount == 0:

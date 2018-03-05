@@ -10,6 +10,7 @@ class VirtualTable(Table):
         super().__init__()
         simulation.add_table(self)
         self._simulation = simulation
+        self.finishedPlayers = []
         bankroll = 10000
         delay = 0
         verbose = False
@@ -32,4 +33,27 @@ class VirtualTable(Table):
         :param player:
         :return:
         """
-        pass
+        self.finishedPlayers.append(player)
+        self.players.remove(player)
+
+    def results(self):
+        for player in self.finishedPlayers:
+            print(player)
+            print(f"   hands:      {player.handsPlayed}")
+            print(f"   wagers:    ${player.totalWagers:0.2f} (${player.totalWagers/player.handsPlayed:0.2f}/hand)")
+            print(f"   abends:    {player.timesAbend} ({player.timesAbend/player.handsPlayed:0.2f}/hand)")
+            print()
+            print(f"   hit:        {player.timesHit} ({player.timesHit/player.handsPlayed:0.2f} per hand)")
+            print(f"   split:      {player.timesSplit} ({player.timesSplit/player.handsPlayed*100:.0f}% of the time)")
+            print(f"   doubled:    {player.timesDoubled} ({player.timesDoubled/player.handsPlayed*100:.0f}% of the time)")
+            print()
+            print(f"   blackjack!: {player.timesBlackjack} ({player.timesBlackjack/player.handsPlayed*100:.0f}% of the time)")
+            print(f"   busted:     {player.timesBusted} ({player.timesBusted/player.handsPlayed*100:.0f}% of the time)")
+            print()
+            print(f"   won:        {player.timesWon} ({player.timesWon/player.handsPlayed*100:.0f}% of the time)")
+            print(f"   lost:       {player.timesLost} ({player.timesLost/player.handsPlayed*100:.0f}% of the time)")
+            print(f"   pushed:     {player.timesPushed} ({player.timesPushed/player.handsPlayed*100:.0f}% of the time)")
+            print()
+            print(f"   insurance:  {player.timesInsurance} ({player.timesInsurance/player.handsPlayed*100:.0f}% of the time)")
+            print(f"   surrender:  {player.timesSurrendered} ({player.timesSurrendered/player.handsPlayed*100:.0f}% of the time)")
+            print()
