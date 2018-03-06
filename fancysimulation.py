@@ -5,10 +5,15 @@ from asciimatics.screen import Screen
 
 from simulation import Simulation
 from virtualtable import VirtualTable
+from random import seed
+
+
+#
+# IMPORT YOUR BOT(S)
+#
 from sommererbots import SommererBotOne, SommererBotTwo, SommererBotThree
 from kolliparabots import Ian
 from ziembots import BadRachelBot
-from random import seed
 
 MAX_WON = 100
 MAX_LOST = 200
@@ -21,18 +26,9 @@ def main():
     simulation = Simulation()
     seed(5)
 
-#    table1 = VirtualTable(simulation)
-#    player1 = BadRachelBot(STARTING_MONEY)
-#    player1.sit(table1)
-#
-#    table2 = VirtualTable(simulation)
-#    player2 = BadRachelBot(STARTING_MONEY)
-#    player2.sit(table2)
-#
-#    table3 = VirtualTable(simulation)
-#    player3 = SommererBotThree(STARTING_MONEY)
-#    player3.sit(table3)
-
+    #
+    # ADD YOUR BOT(S) TO THE LIST
+    #
     setup_bots(['BadRachelBot', 'BadRachelBot', 'SommererBotThree'])
 
     simulation.switch_all_shoes()
@@ -55,9 +51,7 @@ player{number}.sit(table{number})
 
 def graphs(screen):
     global simulation
-    names = [simulation.tables[0].players[0].name,
-             simulation.tables[1].players[0].name,
-             simulation.tables[2].players[0].name]
+    names = [table.players[0].name for table in simulation.tables]
     money = Print(screen,
               BarChart(14, 100, [money0, money1, money2],
                        char="=",
@@ -124,7 +118,10 @@ def money0():
             money = MAX_MONEY
     except:
         money = 0
-        simulation.tables[table].players[0].timesAbend += 1
+        if simulation.tables[table].has_players():
+            simulation.tables[table].players[0].timesAbend += 1
+        else:
+            simulation.tables[table].finishedPlayers[0].timesAbend += 1
     return money
 
 def money1():
@@ -145,7 +142,10 @@ def money1():
             money = MAX_MONEY
     except:
         money = 0
-        simulation.tables[table].players[0].timesAbend += 1
+        if simulation.tables[table].has_players():
+            simulation.tables[table].players[0].timesAbend += 1
+        else:
+            simulation.tables[table].finishedPlayers[0].timesAbend += 1
     return money
 
 def money2():
@@ -166,7 +166,10 @@ def money2():
             money = MAX_MONEY
     except:
         money = 0
-        simulation.tables[table].players[0].timesAbend += 1
+        if simulation.tables[table].has_players():
+            simulation.tables[table].players[0].timesAbend += 1
+        else:
+            simulation.tables[table].finishedPlayers[0].timesAbend += 1
     return money
 
 
