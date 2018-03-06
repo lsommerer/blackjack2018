@@ -1,3 +1,9 @@
+#
+# from the terminal run: pip3 install asciimatics
+#
+# You have to run this program from the terminal in
+# the directory where the program is: python3 fancysimulation.py
+#
 from asciimatics.effects import Print
 from asciimatics.renderers import BarChart
 from asciimatics.scene import Scene
