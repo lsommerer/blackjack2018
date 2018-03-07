@@ -1,9 +1,10 @@
 from virtualtable import VirtualTable
 from shoe import Shoe
-from copy import deepcopy
+from copy import copy, deepcopy
 from random import seed
+import cProfile
 
-from bots import SommererBotThree, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
+from bots import SommererBotTwo, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
 
 
 class Simulation(object):
@@ -92,7 +93,7 @@ def main():
     global simulation
     simulation = Simulation()
 
-    setup_bots(['StreichBotOne', 'RichBot', 'BadRachelBot2', 'TessaBot', 'GlinesBotThree', 'IanThree'])
+    setup_bots(['SommererBotTwo', 'StreichBotOne', 'RichBot', 'BadRachelBot2', 'TessaBot', 'GlinesBotThree', 'IanThree'])
 
     for money in amounts:
         simulation.reset_bots(money)
@@ -103,7 +104,11 @@ def main():
 
 
 def setup_bots(bots):
-    """Execute these commands to setup each bot at a table."""
+    """
+    Execute these commands to setup each bot at a table.  This is uglier than
+    it needs to be because it was written to use with the asciimatics module.
+    It could be much cleaner here.
+    """
     global simulation
     for number, bot in enumerate(bots):
         number += 1
@@ -114,4 +119,5 @@ player{number}.sit(table{number})''')
 
 
 if __name__ == '__main__':
+    #cProfile.run('main()')
     main()

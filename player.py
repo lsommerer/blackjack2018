@@ -49,7 +49,7 @@ class Player(object):
     def rake_out(self, amount):
         """Give money to the dealer."""
         if amount > self._chips:
-            raise ValueError(f"Player needs more money. (has: ${self._chips:0.2f} needs: ${amount:0.2f})")
+            raise ValueError(f"Player ({self}) needs more money. (has: ${self._chips:0.2f} needs: ${amount:0.2f})")
         self._chips -= amount
         return amount
 
