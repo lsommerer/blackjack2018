@@ -3,13 +3,8 @@ from shoe import Shoe
 from copy import deepcopy
 from random import seed
 
-from sommererbots import SommererBotOne, SommererBotTwo, SommererBotThree
-from kolliparabots import IanThree
-from blinebots import GlinesBotThree
-from richbots import RichBot
-from ziembots import BadRachelBot2
-from brazzdabots import TessaBot
-from streikbots import StreichBotOne
+from bots import SommererBotThree, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
+
 
 class Simulation(object):
 
@@ -48,7 +43,14 @@ class Simulation(object):
                 table.dealer.play_own_hand()
                 table.dealer.payout_hands()
                 x += 1
-                if x % 1000 == 0: print('.')
+                if x % 1000 == 0: self.quick_results()
+
+    def quick_results(self):
+        print()
+        for table in self.tables:
+            for player in table.players:
+                print(f'${player.totalWagers:0.2f} ({player.name}) ')
+
 
     def results(self):
         print('*\n* Final Statistics\n*\n')

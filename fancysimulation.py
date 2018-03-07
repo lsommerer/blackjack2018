@@ -17,7 +17,7 @@ from random import seed
 #
 # IMPORT YOUR BOT(S)
 #
-from sommererbots import SommererBotOne, SommererBotTwo, SommererBotThree
+from bots import SommererBotOne, SommererBotTwo, SommererBotThree
 from kolliparabots import Ian
 from ziembots import BadRachelBot
 
