@@ -166,7 +166,7 @@ class Dealer(Player):
 
 
     def offer_insurance(self):
-        print('\n')
+        if self.isVerbose: print('\n')
         self._playersWithInsurance = []
         if self.hands[0][1].name == 'ace':
             for player in self._playingPlayers:

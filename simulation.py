@@ -1,8 +1,15 @@
 from virtualtable import VirtualTable
-from sommererbots import SommererBotOne, SommererBotTwo
 from shoe import Shoe
 from copy import deepcopy
 from random import seed
+
+from sommererbots import SommererBotOne, SommererBotTwo, SommererBotThree
+from kolliparabots import IanThree
+from blinebots import GlinesBotThree
+from richbots import RichBot
+from ziembots import BadRachelBot2
+from brazzdabots import TessaBot
+from streikbots import StreichBotOne
 
 class Simulation(object):
 
@@ -26,12 +33,13 @@ class Simulation(object):
         hasPlayers = False
         for table in self.tables:
             for player in table.players:
-                if player.money > 0:
+                if player.money > 1:
                     hasPlayers = True
         return hasPlayers
 
     def run(self):
-        while self.has_players():
+        x = 1
+        while self.has_players():# and x < 10000:
             for table in self.tables:
                 table.dealer.take_bets()
                 table.dealer.deal()
@@ -39,6 +47,8 @@ class Simulation(object):
                 table.dealer.play_hands()
                 table.dealer.play_own_hand()
                 table.dealer.payout_hands()
+                x += 1
+                if x % 1000 == 0: print('.')
 
     def results(self):
         print('*\n* Final Statistics\n*\n')
@@ -64,22 +74,30 @@ class Simulation(object):
                 print(f"   surrender:  {player.timesSurrendered} ({player.timesSurrendered/player.handsPlayed*100:.0f}% of the time)")
                 print()
 
+
+
 def main():
-    seed(1)
-    money = 1000
+    seed(347)
+    money = 100
+    global simulation
     simulation = Simulation()
 
-    table1 = VirtualTable(simulation, False)
-    player1 = SommererBotOne(money)
-    player1.sit(table1)
-
-    table2 = VirtualTable(simulation, False)
-    player2 = SommererBotTwo(money)
-    player2.sit(table2)
+    setup_bots(money, ['StreichBotOne', 'RichBot', 'BadRachelBot2', 'TessaBot', 'GlinesBotThree', 'IanThree'])
 
     simulation.switch_all_shoes()
     simulation.run()
     simulation.results()
+
+
+def setup_bots(money, bots):
+    """Execute these commands to setup each bot at a table."""
+    global simulation
+    for number, bot in enumerate(bots):
+        number += 1
+        exec(f'''
+table{number} = VirtualTable(simulation)
+player{number} = {bot}({money})
+player{number}.sit(table{number})''')
 
 
 if __name__ == '__main__':

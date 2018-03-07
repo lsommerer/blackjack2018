@@ -1,38 +1,51 @@
 from player import Player
 from random import *
 
-class Ian(Player):
-    def __init__(self, money=1000):
-        super(Ian, self).__init__( name='Ian Bot 1000')
+class IanThree(Player):
+    def __init__(self, money):
+        super(IanThree, self).__init__('Hitler Did Nothing Wrong', money)
 
     def bet_or_leave(self):
-        if self.money < 500:
-            options = ['bet', 'leave']
-            choice = options[randint(0,1)]
+        betMoney = self.money/2
+        if betMoney < 10:
+            bet = self.money
+        elif betMoney < 500:
+            bet = self.money/4
         else:
-            choice = 'bet'
-        if choice == 'bet':
-            bet = randint(0,int(self.money))
-        elif choice == 'leave':
-            bet = -1
+            bet = self.money/2
         return bet
 
     def wants_insurance(self):
-        choice = randint(0,1)
-        if choice == 1:
-            return True
-        else:
-            return False
+        return False
 
     def play(self, hand, dealerShowing):
-        plays = ['s','p','d','h']
-        if not hand.can_split() or self.money < hand.bet:
-            plays.remove('p')
-        if not hand.can_double() or self.money < hand.bet:
-            plays.remove('d')
-        choice = plays[randint(0,len(plays)-1)]
-        if choice == 'd':
-            additionalBet = randint(0,hand.bet)
+        if dealerShowing.hardValue > 15:
+            play = 's'
         else:
-            additionalBet = 0
-        return choice, additionalBet
+            if hand.value() in [9, 10, 11, 12] and hand.can_double():
+                if self.money > hand.bet/2:
+                    play = 'd'
+                else:
+                    play = 'h'
+            elif hand.value() > 17:
+                play = 's'
+            elif hand.value() == 17:
+                plays = ['s', 'h']
+                play = plays[randint(0, 1)]
+            elif hand.can_split():
+                if self.money < 250:
+                    play = 's'
+                else:
+                    play = 'p'
+            else:
+                play = 'h'
+        if play == 'd':
+            if self.money > hand.bet:
+                additionalBet = hand.bet/4
+            elif self.money > hand.bet/2:
+                additionalBet = hand.bet/2
+            else:
+                additionalBet = self.money/6
+        else:
+            additionalBet = None
+        return play, additionalBet

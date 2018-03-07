@@ -33,8 +33,9 @@ class VirtualTable(Table):
         :param player:
         :return:
         """
-        self.finishedPlayers.append(player)
-        self.players.remove(player)
+        #self.finishedPlayers.append(player)
+        #self.players.remove(player)
+        pass
 
     def results(self):
         for player in self.finishedPlayers:
