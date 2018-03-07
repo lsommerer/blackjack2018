@@ -43,13 +43,21 @@ class Simulation(object):
                 table.dealer.play_own_hand()
                 table.dealer.payout_hands()
                 x += 1
-                if x % 1000 == 0: self.quick_results()
+                if x % 2000 == 0: self.quick_results()
 
     def quick_results(self):
         print()
         for table in self.tables:
             for player in table.players:
-                print(f'${player.totalWagers:0.2f} ({player.name}) ')
+                print(f'${player.totalWagers:0.2f} ${player.money:0.2f} ({player.name}) ')
+
+    def reset_bots(self, newMoney):
+        print(f'*************** RESETTING BOTS WITH ${money:0.2f} *************')
+        for table in self.tables:
+            for player in table.players:
+                player.rake_out(player.money)
+                player.rake_in(newMoney)
+        self.quick_results()
 
 
     def results(self):
@@ -79,16 +87,20 @@ class Simulation(object):
 
 
 def main():
-    seed(347)
-    money = 100
+    seedNumber = 500
+    seed(seedNumber)
+    amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
     global simulation
     simulation = Simulation()
 
-    setup_bots(money, ['StreichBotOne', 'RichBot', 'BadRachelBot2', 'TessaBot', 'GlinesBotThree', 'IanThree'])
+    setup_bots(10, ['StreichBotOne', 'RichBot', 'BadRachelBot2', 'TessaBot', 'GlinesBotThree', 'IanThree'])
 
-    simulation.switch_all_shoes()
-    simulation.run()
-    simulation.results()
+    for money in amounts:
+        simulation.switch_all_shoes()
+        simulation.run()
+        simulation.reset_bots(money)
+        seed(seedNumber + money)
+    #simulation.results()
 
 
 def setup_bots(money, bots):
