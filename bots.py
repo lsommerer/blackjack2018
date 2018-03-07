@@ -209,8 +209,11 @@ class TessaBot(Player):
         #
         # double down conditions
         #
-        elif hand.can_double() and self.money >= hand.bet and hand.value() in [10,
-                                                                               11] and dealerShowing.softValue != 10 and dealerShowing.softValue != 11:
+        elif (hand.can_double() and
+              self.money >= hand.bet and
+              hand.value() in [10, 11] and
+              dealerShowing.softValue != 10 and
+              dealerShowing.softValue != 11):
             choice = 'd'
             additionalBet = hand.bet
         #
@@ -221,9 +224,7 @@ class TessaBot(Player):
                 choice = 'h'
             elif hand.value() < 12:
                 choice = 'h'
-        #
-        # stand conditions
-        #
+
 
 
         return choice, additionalBet

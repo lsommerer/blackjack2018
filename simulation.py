@@ -10,6 +10,7 @@ class Simulation(object):
 
     def __init__(self):
         self.tables = []
+        self.handsPlayed = 0
 
     def add_table(self, table):
         self.tables.append(table)
@@ -33,7 +34,6 @@ class Simulation(object):
         return hasPlayers
 
     def run(self):
-        x = 1
         while self.has_players():# and x < 10000:
             for table in self.tables:
                 table.dealer.take_bets()
@@ -42,22 +42,21 @@ class Simulation(object):
                 table.dealer.play_hands()
                 table.dealer.play_own_hand()
                 table.dealer.payout_hands()
-                x += 1
-                if x % 2000 == 0: self.quick_results()
+            self.handsPlayed += 1
+            if self.handsPlayed % 1000 == 0: self.quick_results()
 
     def quick_results(self):
-        print()
+        print(f'\n*** Results after {self.handsPlayed} hands:')
         for table in self.tables:
             for player in table.players:
                 print(f'${player.totalWagers:0.2f} ${player.money:0.2f} ({player.name}) ')
 
     def reset_bots(self, newMoney):
-        print(f'*************** RESETTING BOTS WITH ${money:0.2f} *************')
+        print(f'*************** RESETTING BOTS WITH ${newMoney:0.2f} *************')
         for table in self.tables:
             for player in table.players:
                 player.rake_out(player.money)
                 player.rake_in(newMoney)
-        self.quick_results()
 
 
     def results(self):
@@ -93,24 +92,24 @@ def main():
     global simulation
     simulation = Simulation()
 
-    setup_bots(10, ['StreichBotOne', 'RichBot', 'BadRachelBot2', 'TessaBot', 'GlinesBotThree', 'IanThree'])
+    setup_bots(['StreichBotOne', 'RichBot', 'BadRachelBot2', 'TessaBot', 'GlinesBotThree', 'IanThree'])
 
     for money in amounts:
-        simulation.switch_all_shoes()
-        simulation.run()
         simulation.reset_bots(money)
         seed(seedNumber + money)
-    #simulation.results()
+        simulation.switch_all_shoes()
+        simulation.run()
+    simulation.results()
 
 
-def setup_bots(money, bots):
+def setup_bots(bots):
     """Execute these commands to setup each bot at a table."""
     global simulation
     for number, bot in enumerate(bots):
         number += 1
         exec(f'''
 table{number} = VirtualTable(simulation)
-player{number} = {bot}({money})
+player{number} = {bot}(0)
 player{number}.sit(table{number})''')
 
 
