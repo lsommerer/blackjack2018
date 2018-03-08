@@ -1,8 +1,8 @@
 #
 # from the terminal run: pip3 install asciimatics
 #
-# You have to run this program from the terminal in
-# the directory where the program is: python3 fancysimulation.py
+# You have to run this program (fancysimulation.py) from the terminal in
+# the directory where the program is saved: python3 fancysimulation.py
 #
 from asciimatics.effects import Print
 from asciimatics.renderers import BarChart
@@ -15,11 +15,10 @@ from random import seed
 
 
 #
-# IMPORT YOUR BOT(S)
+# IMPORT your bots from wherever you keep them, then update the list of bots below.
 #
-from bots import SommererBotOne, SommererBotTwo, SommererBotThree
-from kolliparabots import Ian
-from ziembots import BadRachelBot
+from allbots import SommererBotBasicStrategy, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
+
 
 MAX_WON = 100
 MAX_LOST = 200
@@ -28,48 +27,41 @@ MAX_MONEY = 300
 STARTING_MONEY = 150
 
 def main():
+    #
+    # Only works for 3 bots at a time.
+    #
+    bots = [IanThree, TessaBot, GlinesBotThree]
     global simulation
-    simulation = Simulation()
-    seed(5)
+#    global moneyFunctions
+    simulation = Simulation(bots)
+#    moneyFunctions = money_functions()
 
-    #
-    # ADD YOUR BOT(S) TO THE LIST
-    #
-    setup_bots(['BadRachelBot', 'BadRachelBot', 'SommererBotThree'])
+    simulation.reset_bots(200)
+
+    seed(5)
 
     simulation.switch_all_shoes()
     Screen.wrapper(graphs)
-    print('*\n* Final Statistics\n*\n')
-    for table in simulation.tables:
-        table.results()
-
-def setup_bots(bots):
-    """Execute these commands to setup each bot at a table."""
-    global simulation
-    for number, bot in enumerate(bots):
-        number += 1
-        exec(f'''
-table{number} = VirtualTable(simulation)
-player{number} = {bot}(STARTING_MONEY)
-player{number}.sit(table{number})
-              ''')
+    #simulation.results()
 
 
 def graphs(screen):
     global simulation
+#    global moneyFunctions
     names = [table.players[0].name for table in simulation.tables]
     money = Print(screen,
               BarChart(14, 100, [money0, money1, money2],
-                       char="=",
-                       gradient=[(STARTING_MONEY/4, Screen.COLOUR_RED),
+#              BarChart(14, 100, moneyFunctions,
+                                char="=",
+                                gradient=[(STARTING_MONEY/4, Screen.COLOUR_RED),
                                  (STARTING_MONEY/4*3, Screen.COLOUR_YELLOW),
                                  (STARTING_MONEY, Screen.COLOUR_WHITE),
                                  (MAX_MONEY, Screen.COLOUR_GREEN)],
-                       scale = MAX_MONEY,
-                       labels=True,
-                       axes=BarChart.X_AXIS,
-                       intervals = MAX_MONEY/4,
-                       keys = names),
+                                scale = MAX_MONEY,
+                                labels=True,
+                                axes=BarChart.X_AXIS,
+                                intervals = MAX_MONEY/4,
+                                keys = names),
               x=3, y=2, transparent=False, speed=1)
 
     won = Print(screen,
@@ -101,10 +93,56 @@ def graphs(screen):
               x=53, y=20, transparent=False, speed=1)
 
     scenes = []
-    scenes.append(Scene([money, won, lost, pushed], duration=50))
+    scenes.append(Scene([money, lost, pushed], duration=200))
+#    scenes.append(Scene([money, won, lost, pushed], duration=50))
     while simulation.has_players():
         screen.play(scenes, repeat=False)
 
+
+# class FancySimulation(Simulation):
+#
+#     def run_table(self, table):
+#         """Runs through one round of the specified table. This method if for
+#         use in the fancy simulation that used the asciimatics module."""
+#         table.dealer.take_bets()
+#         table.dealer.deal()
+#         table.dealer.offer_insurance()
+#         table.dealer.play_hands()
+#         table.dealer.play_own_hand()
+#         table.dealer.payout_hands()
+#         self.handsPlayed += 1
+#
+#     def money(self, tableNumber):
+#         table = self.tables[tableNumber]
+#         try:
+#             self.run_table(table)
+#             money = table.players[0].money
+#             if money > MAX_MONEY:
+#                 money = MAX_MONEY
+#         except:
+#             money = 0
+#             table.players[0].timesAbend += 1
+#         return money
+#
+# def money_functions():
+#     global simulation
+#     functions = []
+#     for tableNumber in range(len(simulation.tables)):
+#         def _function():
+#             global simulation
+#             table = simulation.tables[tableNumber]
+#             try:
+#                 simulation.run_table(table)
+#                 money = table.players[0].money
+#                 if money > MAX_MONEY:
+#                     money = MAX_MONEY
+#             except:
+#                 money = 0
+#                 table.players[0].timesAbend += 1
+#             return money
+#
+#         functions.append(_function)
+#    return functions
 
 def money0():
     global simulation
@@ -182,10 +220,7 @@ def money2():
 def won0():
     global simulation
     table = 0
-    if simulation.tables[table].has_players():
-        won = simulation.tables[table].players[0].timesWon
-    else:
-        won = simulation.tables[table].finishedPlayers[0].timesWon
+    won = simulation.tables[table].players[0].timesWon
     if won > MAX_WON:
         won = MAX_WON
     return won
@@ -193,10 +228,7 @@ def won0():
 def won1():
     global simulation
     table = 1
-    if simulation.tables[table].has_players():
-        won = simulation.tables[table].players[0].timesWon
-    else:
-        won = simulation.tables[table].finishedPlayers[0].timesWon
+    won = simulation.tables[table].players[0].timesWon
     if won > MAX_WON:
         won = MAX_WON
     return won
@@ -204,10 +236,7 @@ def won1():
 def won2():
     global simulation
     table = 2
-    if simulation.tables[table].has_players():
-        won = simulation.tables[table].players[0].timesWon
-    else:
-        won = simulation.tables[table].finishedPlayers[0].timesWon
+    won = simulation.tables[table].players[0].timesWon
     if won > MAX_WON:
         won = MAX_WON
     return won

@@ -4,6 +4,9 @@ from copy import copy, deepcopy
 from random import seed
 import cProfile
 
+#
+# IMPORT your bots from wherever you keep them, then update the list of bots below.
+#
 from allbots import SommererBotBasicStrategy, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
 
 def main():
@@ -47,7 +50,9 @@ class Simulation(object):
             if table.has_active_players():
                 table._dealer.switch_shoe(deepcopy(shoe))
 
+
     def has_players(self):
+        """Are there any players at any tables with money left to bet?"""
         hasPlayers = False
         for table in self.tables:
             for player in table.players:
@@ -56,7 +61,7 @@ class Simulation(object):
         return hasPlayers
 
     def run(self):
-        while self.has_players():# and x < 10000:
+        while self.has_players():
             for table in self.tables:
                 table.dealer.take_bets()
                 table.dealer.deal()
@@ -66,6 +71,7 @@ class Simulation(object):
                 table.dealer.payout_hands()
             self.handsPlayed += 1
             if self.handsPlayed % 1000 == 0: self.quick_results()
+
 
     def quick_results(self):
         print(f'\n*** Results after {self.handsPlayed} potential hands:')
