@@ -6,20 +6,6 @@ import cProfile
 
 from allbots import SommererBotBasicStrategy, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
 
-def setup_bots(bots):
-    """
-    Execute these commands to setup each bot at a table.  This is uglier than
-    it needs to be because it was written to use with the asciimatics module.
-    It could be much cleaner here.
-    """
-    global simulation
-    for number, bot in enumerate(bots):
-        number += 1
-        exec(f'''
-table{number} = VirtualTable(simulation)
-player{number} = {bot}(0)
-player{number}.sit(table{number})''')
-
 def main():
     seedNumber = 350
     seed(seedNumber)
