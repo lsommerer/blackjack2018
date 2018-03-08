@@ -17,6 +17,13 @@ class VirtualTable(Table):
         dealer = Dealer('Dealer', bankroll, delay, verbose)
         dealer.sit(self)
 
+    def has_active_players(self):
+        hasActivePlayers = False
+        for player in self.players:
+            if player.money >= 1:
+                hasActivePlayers = True
+        return hasActivePlayers
+
     def shuffling_shoe(self):
         """
         Dealer is shuffling his shoe. Since we want all dealers in the simulation to use the same shoes,

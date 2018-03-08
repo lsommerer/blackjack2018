@@ -195,8 +195,8 @@ class Dealer(Player):
                 while hand.can_hit():
                     sleep(self.delay)
                     playerDecision, additionalBet = player.play(hand,dealerShowing)
-                    if playerDecision in playerOptions:
-                        which_option = playerOptions[playerDecision]
+                    if playerDecision.lower() in playerOptions:
+                        which_option = playerOptions[playerDecision.lower()]
                         which_option(player, hand, additionalBet)
                     else:
                         if self.isVerbose: print(f"I'm sorry, I don't know what '{playerDecision}' means.")

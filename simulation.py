@@ -4,7 +4,7 @@ from copy import copy, deepcopy
 from random import seed
 import cProfile
 
-from bots import SommererBotTwo, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
+from bots import SommererBotBasicStrategy, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
 
 
 class Simulation(object):
@@ -24,7 +24,8 @@ class Simulation(object):
         """
         shoe = Shoe()
         for table in self.tables:
-            table._dealer.switch_shoe(deepcopy(shoe))
+            if table.has_active_players():
+                table._dealer.switch_shoe(deepcopy(shoe))
 
     def has_players(self):
         hasPlayers = False
@@ -58,6 +59,7 @@ class Simulation(object):
             for player in table.players:
                 player.rake_out(player.money)
                 player.rake_in(newMoney)
+        self.switch_all_shoes()
 
 
     def results(self):
@@ -87,18 +89,17 @@ class Simulation(object):
 
 
 def main():
-    seedNumber = 500
+    seedNumber = 345
     seed(seedNumber)
     amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
     global simulation
     simulation = Simulation()
 
-    setup_bots(['SommererBotTwo', 'StreichBotOne', 'RichBot', 'BadRachelBot2', 'TessaBot', 'GlinesBotThree', 'IanThree'])
+    setup_bots(['SommererBotBasicStrategy', 'StreichBotOne', 'RichBot', 'BadRachelBot2', 'TessaBot', 'GlinesBotThree', 'IanThree'])
 
     for money in amounts:
         simulation.reset_bots(money)
         seed(seedNumber + money)
-        simulation.switch_all_shoes()
         simulation.run()
     simulation.results()
 
