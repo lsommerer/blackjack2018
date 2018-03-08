@@ -64,6 +64,7 @@ class Simulation(object):
 
     def results(self):
         print('*\n* Final Statistics\n*\n')
+        totalhands = 0
         for table in self.tables:
             for player in table.players:
                 print(player)
@@ -85,11 +86,12 @@ class Simulation(object):
                 print(f"   insurance:  {player.timesInsurance} ({player.timesInsurance/player.handsPlayed*100:.0f}% of the time)")
                 print(f"   surrender:  {player.timesSurrendered} ({player.timesSurrendered/player.handsPlayed*100:.0f}% of the time)")
                 print()
-
+                totalhands += player.handsPlayed
+        print(f'Actual hands played: {totalhands}')
 
 
 def main():
-    seedNumber = 345
+    seedNumber = 350
     seed(seedNumber)
     amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
     global simulation
