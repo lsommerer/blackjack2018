@@ -4,7 +4,7 @@ from copy import copy, deepcopy
 from random import seed
 import cProfile
 
-from bots import SommererBotBasicStrategy, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
+from allbots import SommererBotBasicStrategy, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
 
 def setup_bots(bots):
     """
