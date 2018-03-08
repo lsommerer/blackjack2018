@@ -6,12 +6,46 @@ import cProfile
 
 from bots import SommererBotBasicStrategy, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
 
+def setup_bots(bots):
+    """
+    Execute these commands to setup each bot at a table.  This is uglier than
+    it needs to be because it was written to use with the asciimatics module.
+    It could be much cleaner here.
+    """
+    global simulation
+    for number, bot in enumerate(bots):
+        number += 1
+        exec(f'''
+table{number} = VirtualTable(simulation)
+player{number} = {bot}(0)
+player{number}.sit(table{number})''')
+
+def main():
+    seedNumber = 350
+    seed(seedNumber)
+    amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
+    bots = [SommererBotBasicStrategy, StreichBotOne, RichBot, BadRachelBot2, TessaBot, GlinesBotThree, IanThree]
+
+    global simulation
+    simulation = Simulation(bots)
+
+    for money in amounts:
+        simulation.reset_bots(money)
+        seed(seedNumber + money)
+        simulation.run()
+    simulation.results()
+
 
 class Simulation(object):
 
-    def __init__(self):
+    def __init__(self, botList):
         self.tables = []
         self.handsPlayed = 0
+        for bot in botList:
+            table = VirtualTable(self)
+            money = 0
+            player = bot(money)
+            player.sit(table)
 
     def add_table(self, table):
         self.tables.append(table)
@@ -48,7 +82,7 @@ class Simulation(object):
             if self.handsPlayed % 1000 == 0: self.quick_results()
 
     def quick_results(self):
-        print(f'\n*** Results after {self.handsPlayed} hands:')
+        print(f'\n*** Results after {self.handsPlayed} potential hands:')
         for table in self.tables:
             for player in table.players:
                 print(f'${player.totalWagers:0.2f} ${player.money:0.2f} ({player.name}) ')
@@ -90,35 +124,6 @@ class Simulation(object):
         print(f'Actual hands played: {totalhands}')
 
 
-def main():
-    seedNumber = 350
-    seed(seedNumber)
-    amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
-    global simulation
-    simulation = Simulation()
-
-    setup_bots(['SommererBotBasicStrategy', 'StreichBotOne', 'RichBot', 'BadRachelBot2', 'TessaBot', 'GlinesBotThree', 'IanThree'])
-
-    for money in amounts:
-        simulation.reset_bots(money)
-        seed(seedNumber + money)
-        simulation.run()
-    simulation.results()
-
-
-def setup_bots(bots):
-    """
-    Execute these commands to setup each bot at a table.  This is uglier than
-    it needs to be because it was written to use with the asciimatics module.
-    It could be much cleaner here.
-    """
-    global simulation
-    for number, bot in enumerate(bots):
-        number += 1
-        exec(f'''
-table{number} = VirtualTable(simulation)
-player{number} = {bot}(0)
-player{number}.sit(table{number})''')
 
 
 if __name__ == '__main__':

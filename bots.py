@@ -512,8 +512,8 @@ class SommererBotBasicStrategy(Player):
 
     decisions = ['S', 'H', 'D', 'P', 'U']
 
-    # Dealer's card:    2, 3, 4, 5, 6, 7, 8, 9, T, A     hard value of your hand:
-    hardValueMatrix = [[H, H, H, H, H, H, H, H, H, H],  # 2 (only if we just split <2,2>
+    # Dealer's card:    2, 3, 4, 5, 6, 7, 8, 9, T, A     soft value of your hand:
+    softValueMatrix = [[H, H, H, H, H, H, H, H, H, H],  # 2 (only if we just split <2,2>
                        [H, H, H, H, H, H, H, H, H, H],  # 3 (don't think this one is possible)
                        [H, H, H, H, H, H, H, H, H, H],  # 4
                        [H, H, H, H, H, H, H, H, H, H],  # 5
@@ -534,17 +534,17 @@ class SommererBotBasicStrategy(Player):
                        [S, S, S, S, S, S, S, S, S, S],  # 20 Always Stand
                        [S, S, S, S, S, S, S, S, S, S]]  # 21 Always Stand
 
-    # Dealer's card:    2, 3, 4, 5, 6, 7, 8, 9, T, A     soft value of your hand:
-    softValueMatrix = [[P, P, P, P, P, P, P, P, P, P],  # 12 <A,A> (2 aces always split)
-                       [H, H, H, D, D, H, H, H, H, H],  # 13 <A,2> (or <A,A,A> and so forth)
-                       [H, H, H, D, D, H, H, H, H, H],  # 14 <A,3>
-                       [H, H, D, D, D, H, H, H, H, H],  # 15 <A,4>
-                       [H, H, D, D, D, H, H, H, H, H],  # 16 <A,5>
-                       [H, D, D, D, D, H, H, H, H, H],  # 17 <A,6>
-                       [S, D, D, D, D, S, S, H, H, H],  # 18 <A,7>
-                       [S, S, S, S, S, S, S, S, S, S],  # 19 <A,8>
-                       [S, S, S, S, S, S, S, S, S, S],  # 20 <A,9>
-                       [S, S, S, S, S, S, S, S, S, S]]  # 21 <A,10> (blackjack!)
+    # Dealer's card:    2, 3, 4, 5, 6, 7, 8, 9, T, A     hard value of your hand:
+    hardValueMatrix = [[P, P, P, P, P, P, P, P, P, P],  # 2 <A,A> (2 aces always split)
+                       [H, H, H, D, D, H, H, H, H, H],  # 3 <A,2> (or <A,A,A> and so forth)
+                       [H, H, H, D, D, H, H, H, H, H],  # 4 <A,3>
+                       [H, H, D, D, D, H, H, H, H, H],  # 5 <A,4>
+                       [H, H, D, D, D, H, H, H, H, H],  # 6 <A,5>
+                       [H, D, D, D, D, H, H, H, H, H],  # 7 <A,6>
+                       [S, D, D, D, D, S, S, H, H, H],  # 8 <A,7>
+                       [S, S, S, S, S, S, S, S, S, S],  # 9 <A,8>
+                       [S, S, S, S, S, S, S, S, S, S],  # 10 <A,9>
+                       [S, S, S, S, S, S, S, S, S, S]]  # 11 <A,10> (blackjack!)
 
     # Dealer's card:    2, 3, 4, 5, 6, 7, 8, 9, T, A     contents of your hand:
     pairValueMatrix = [[P, P, P, P, P, P, P, P, P, P],  # <A,A>  (always split aces)
@@ -571,12 +571,12 @@ class SommererBotBasicStrategy(Player):
         if hand.can_split():
             matrix = SommererBotBasicStrategy.pairValueMatrix
             row =  hand[0].hardValue - 1
-        elif hand.hard_value() <= 21:
+        elif (hand[0].isAce or hand[1].isAce) and (hand.hard_value() < 12):
             matrix = SommererBotBasicStrategy.hardValueMatrix
-            row = hand.hard_value() - 2
+            row = hand.soft_value() - 11
         else:
             matrix = SommererBotBasicStrategy.softValueMatrix
-            row = hand.soft_value() - 12
+            row = hand.hard_value() - 2
         #
         # Choose the column based on the dealer's card and
         # then choose the letter
@@ -589,7 +589,8 @@ class SommererBotBasicStrategy(Player):
             print('row: ', row)
             print('column: ', column)
             print('dealer: ', dealerShowing)
-            print('player: ', hand)
+            print('hand: ', hand)
+            print('player: ', self)
             print('matrix:')
             for row in matrix:
                 print(row)
