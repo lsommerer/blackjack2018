@@ -11,7 +11,7 @@ class VirtualTable(Table):
         simulation.add_table(self)
         self._simulation = simulation
         self.finishedPlayers = []
-        bankroll = 1000000
+        bankroll = 1_000_000
         delay = 0
         verbose = False
         dealer = Dealer('Dealer', bankroll, delay, verbose)
