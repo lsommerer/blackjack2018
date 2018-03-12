@@ -84,7 +84,7 @@ class Simulation(object):
         print(f'\n*** Results after {self.handsPlayed} potential hands:')
         for table in self.tables:
             for player in table.players:
-                print(f'${player.totalWagers:0,.2f} ${player.money:0,.2f} ({player.name}) ')
+                print(f'${player.totalWagers:12,.2f} ${player.money:0,.2f} ({player.name}) ')
 
     def reset_bots(self, newMoney):
         print(f'*************** RESETTING BOTS WITH ${newMoney:0.2f} *************')
