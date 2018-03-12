@@ -321,6 +321,8 @@ class Dealer(Player):
         for player in self._playingPlayers:
             player.discard_hands()
             player.insurance = 0
+            if player._chips > player.maxMoney:
+                player.maxMoney = player._chips
         self.discard_hands()
         if self.isVerbose: print('---results complete---')
 

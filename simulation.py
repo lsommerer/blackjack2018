@@ -17,10 +17,10 @@ from allbots import SommererBotBasicStrategy, \
                     TessaBot
 
 def main():
-    seedNumber = 351
+    seedNumber = 353
     seed(seedNumber)
     amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
-    bots = [StreichBotSeven, RichBotTwo, BadRachelBot5, TessaBot, GlinesBotFour, NhuBlackjackBotOne]
+    bots = [SommererBotBasicStrategy, StreichBotSeven, RichBotTwo, BadRachelBot5, TessaBot, GlinesBotFour, NhuBlackjackBotOne]
 
     global simulation
     simulation = Simulation(bots)
@@ -81,10 +81,11 @@ class Simulation(object):
 
 
     def quick_results(self):
-        print(f'\n*** Results after {self.handsPlayed} potential hands:')
+        print(f'\n*** Results after {self.handsPlayed} potential hands ***')
+        print('Total Wagered  Current      Max   Name')
         for table in self.tables:
             for player in table.players:
-                print(f'${player.totalWagers:12,.2f} ${player.money:0,.2f} ({player.name}) ')
+                print(f'{player.totalWagers:13,.2f} {player.money:8,.2f} {player.maxMoney:8,.2f}   {player.name:18}')
 
     def reset_bots(self, newMoney):
         print(f'*************** RESETTING BOTS WITH ${newMoney:0.2f} *************')

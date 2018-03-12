@@ -23,6 +23,7 @@ class Player(object):
         self.timesInsurance = 0
         self.timesSurrendered = 0
         self.timesAbend = 0
+        self.maxMoney = money
 
     def __str__(self):
         s = f'{self.name} ${self._chips:0.2f}: '
