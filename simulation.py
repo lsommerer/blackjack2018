@@ -17,7 +17,7 @@ from allbots import SommererBotBasicStrategy, \
                     TessaBot
 
 def main():
-    seedNumber = 353
+    seedNumber = 355
     seed(seedNumber)
     amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
     bots = [SommererBotBasicStrategy, StreichBotSeven, RichBotTwo, BadRachelBot5, TessaBot, GlinesBotFour, NhuBlackjackBotOne]
@@ -37,6 +37,7 @@ class Simulation(object):
     def __init__(self, botList):
         self.tables = []
         self.handsPlayed = 0
+        self.currentStartingMoney = 0
         for bot in botList:
             table = VirtualTable(self)
             money = 0
@@ -81,7 +82,7 @@ class Simulation(object):
 
 
     def quick_results(self):
-        print(f'\n*** Results after {self.handsPlayed} potential hands ***')
+        print(f'\n*** Results after {self.handsPlayed} potential hands (${self.currentStartingMoney:0.2f} in chips) ***')
         print('Total Wagered  Current      Max   Name')
         for table in self.tables:
             for player in table.players:
@@ -89,10 +90,13 @@ class Simulation(object):
 
     def reset_bots(self, newMoney):
         print(f'*************** RESETTING BOTS WITH ${newMoney:0.2f} *************')
+        self.currentStartingMoney = newMoney
         for table in self.tables:
             for player in table.players:
                 player.rake_out(player.money)
                 player.rake_in(newMoney)
+                player.maxMoney = 0
+                player.lastHand = None
         self.switch_all_shoes()
 
 

@@ -271,35 +271,44 @@ class Dealer(Player):
                     text = 'lost'
                     player.timesBusted += 1
                     player.timesLost += 1
+                    player.lastHand = 'lost'
                 elif hand.isBlackJack and not dealerHand.isBlackJack:
                     winnings = hand.bet * 2.5
                     text = 'won (Blackjack!)'
                     player.timesWon += 1
                     player.timesBlackjack += 1
+                    player.lastHand = 'won'
                 elif hand.isBlackJack and dealerHand.isBlackJack:
                     winnings = hand.bet
                     text = 'pushed (blackjack) and lost'
                     player.timesPushed += 1
                     player.timesBlackjack += 1
+                    player.lastHand = 'pushed'
                 elif not hand.isBlackJack and dealerHand.isBlackJack:
                     winnings = 0
                     text = 'lost'
                     player.timesLost += 1
+                    player.lastHand = 'lost'
                 elif hand.value() == dealerHand.value():
                     winnings = hand.bet
                     text = 'pushed and lost'
                     player.timesPushed += 1
+                    player.lastHand = 'pushed'
                 elif dealerHand.isBusted:
                     winnings = hand.bet * 2
                     text = 'won (dealer busted)'
                     player.timesWon += 1
+                    player.lastHand = 'won'
                 elif hand.value() > dealerHand.value():
                     winnings = hand.bet * 2
                     text = 'won'
+                    player.timesWon += 1
+                    player.lastHand = 'won'
                 elif hand.value() < dealerHand.value():
                     winnings = 0
                     text = 'lost'
                     player.timesLost += 1
+                    player.lastHand = 'lost'
                 player.rake_in(winnings)
                 self.rake_out(winnings)
                 winnings = abs(winnings-hand.bet)
