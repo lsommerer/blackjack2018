@@ -7,13 +7,20 @@ import cProfile
 #
 # IMPORT your bots from wherever you keep them, then update the list of bots below.
 #
-from allbots import SommererBotBasicStrategy, IanThree, GlinesBotThree, RichBot, BadRachelBot2, TessaBot, StreichBotOne
+from allbots import SommererBotBasicStrategy, \
+                    IanFour, \
+                    StreichBotSeven, \
+                    NhuBlackjackBotOne, \
+                    GlinesBotFour, \
+                    RichBotTwo, \
+                    BadRachelBot5, \
+                    TessaBot
 
 def main():
-    seedNumber = 350
+    seedNumber = 351
     seed(seedNumber)
     amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
-    bots = [SommererBotBasicStrategy, StreichBotOne, RichBot, BadRachelBot2, TessaBot, GlinesBotThree, IanThree]
+    bots = [StreichBotSeven, RichBotTwo, BadRachelBot5, TessaBot, GlinesBotFour, NhuBlackjackBotOne]
 
     global simulation
     simulation = Simulation(bots)

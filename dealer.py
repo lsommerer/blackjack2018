@@ -124,8 +124,9 @@ class Dealer(Player):
         Make sure that players who might be counting cards get to see
         every card that is delt, not just the ones in their hands.
         """
-        for player in self._playingPlayers:
-            player.count(card)
+        pass
+        # for player in self._playingPlayers:
+        #     player.count(card)
 
 
     def deal(self):

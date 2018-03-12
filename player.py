@@ -62,7 +62,7 @@ class Player(object):
         to bet, sit this hand out by entering 0 for a bet, or leave the table by
         entering -1.
         """
-        raise NotImplementedError("Please implment this in your subclass.")
+        raise NotImplementedError(f"{self.__name__}, please implment this in your subclass.")
 
     def wants_insurance(self):
         """
@@ -72,7 +72,7 @@ class Player(object):
         receives their cards and after the dealer has received his cards. It is
         only called if the dealer is showing an ace (the dealer might have blackjack).
         """
-        raise NotImplementedError("Please implment this in your subclass.")
+        raise NotImplementedError(f"{self.__name__}, please implment this in your subclass.")
 
     def play(self, hand, dealerShowing):
         """
@@ -92,7 +92,7 @@ class Player(object):
                     'u': 's[U]rrender'}
         return choice, additionalBet
         """
-        raise NotImplementedError("Please implment this in your subclass.")
+        raise NotImplementedError(f"{self.__name__}, please implment this in your subclass.")
 
 
     def count(self, card):
