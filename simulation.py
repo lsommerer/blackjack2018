@@ -30,6 +30,7 @@ def main():
         seed(seedNumber + money)
         simulation.run()
     simulation.results()
+    simulation.results_chart()
 
 
 class Simulation(object):
@@ -99,9 +100,8 @@ class Simulation(object):
                 player.lastHand = None
         self.switch_all_shoes()
 
-
     def results(self):
-        print('*\n* Final Statistics\n*\n')
+        print('\n*** Final Statistics ***\n\n')
         totalhands = 0
         for table in self.tables:
             for player in table.players:
@@ -111,22 +111,57 @@ class Simulation(object):
                 print(f"   abends:    {player.timesAbend} ({player.timesAbend/player.handsPlayed:0.2f}/hand)")
                 print()
                 print(f"   hit:        {player.timesHit} ({player.timesHit/player.handsPlayed:0.2f} per hand)")
-                print(f"   split:      {player.timesSplit} ({player.timesSplit/player.handsPlayed*100:.0f}% of the time)")
-                print(f"   doubled:    {player.timesDoubled} ({player.timesDoubled/player.handsPlayed*100:.0f}% of the time)")
+                print(
+                    f"   split:      {player.timesSplit} ({player.timesSplit/player.handsPlayed*100:.0f}% of the time)")
+                print(
+                    f"   doubled:    {player.timesDoubled} ({player.timesDoubled/player.handsPlayed*100:.0f}% of the time)")
                 print()
-                print(f"   blackjack!: {player.timesBlackjack} ({player.timesBlackjack/player.handsPlayed*100:.0f}% of the time)")
-                print(f"   busted:     {player.timesBusted} ({player.timesBusted/player.handsPlayed*100:.0f}% of the time)")
+                print(
+                    f"   blackjack!: {player.timesBlackjack} ({player.timesBlackjack/player.handsPlayed*100:.0f}% of the time)")
+                print(
+                    f"   busted:     {player.timesBusted} ({player.timesBusted/player.handsPlayed*100:.0f}% of the time)")
                 print()
                 print(f"   won:        {player.timesWon} ({player.timesWon/player.handsPlayed*100:.0f}% of the time)")
                 print(f"   lost:       {player.timesLost} ({player.timesLost/player.handsPlayed*100:.0f}% of the time)")
-                print(f"   pushed:     {player.timesPushed} ({player.timesPushed/player.handsPlayed*100:.0f}% of the time)")
+                print(
+                    f"   pushed:     {player.timesPushed} ({player.timesPushed/player.handsPlayed*100:.0f}% of the time)")
                 print()
-                print(f"   insurance:  {player.timesInsurance} ({player.timesInsurance/player.handsPlayed*100:.0f}% of the time)")
-                print(f"   surrender:  {player.timesSurrendered} ({player.timesSurrendered/player.handsPlayed*100:.0f}% of the time)")
+                print(
+                    f"   insurance:  {player.timesInsurance} ({player.timesInsurance/player.handsPlayed*100:.0f}% of the time)")
+                print(
+                    f"   surrender:  {player.timesSurrendered} ({player.timesSurrendered/player.handsPlayed*100:.0f}% of the time)")
                 print()
                 totalhands += player.handsPlayed
         print(f'Actual hands played: {totalhands}')
 
+
+    def results_chart(self):
+        print('\n*** Final Statistics ***\n\n')
+        totalhands = 0
+        print('Name                      Wagers     (Avg)    Hands   Avg Hits  Split%   Doubled%  Blackjack%   Bust%  Won%   Lost%   Push%  Insure% Abends')
+        print('-------------------------------------------------------------------------------------------------------------------------------------------')
+        for table in self.tables:
+            for player in table.players:
+                string = ''
+                string += f'{player.name:18}:'
+                string += f'{player.totalWagers:13,.2f}   '
+                string += f'${player.totalWagers/player.handsPlayed:6.2f}'
+                string += f'{player.handsPlayed:9}      '
+                string += f'{player.timesHit/player.handsPlayed:5.2f}     '
+                string += f'{player.timesSplit/player.handsPlayed*100:2.0f}%        '
+                string += f'{player.timesDoubled/player.handsPlayed*100:2.0f}%         '
+                string += f'{player.timesBlackjack/player.handsPlayed*100:2.0f}%     '
+                string += f'{player.timesBusted/player.handsPlayed*100:2.0f}%   '
+                string += f'{player.timesWon/player.handsPlayed*100:2.0f}%     '
+                string += f'{player.timesLost/player.handsPlayed*100:2.0f}%     '
+                string += f'{player.timesPushed/player.handsPlayed*100:2.0f}%      '
+                string += f'{player.timesInsurance/player.handsPlayed*100:2.0f}%    '
+                string += f'{player.timesAbend:3}  '
+                #string += f'{player.timesSurrendered/player.handsPlayed*100:.0f}%  '
+                print(string)
+                totalhands += player.handsPlayed
+        print('-------------------------------------------------------------------------------------------------------------------------------------------')
+        print(f'Actual hands played: {totalhands}')
 
 
 
