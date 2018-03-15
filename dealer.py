@@ -156,11 +156,7 @@ class Dealer(Player):
         bet = 0
         self.add_hand(Hand(bet))
         card = self._shoe.draw().flip()
-        #TODO remove this debugging code
-#        print('shoe:', self._shoe)
-#        print('draw test:', self._shoe.draw())
-#        print('flip test:', self._shoe.draw().flip())
-#        print('card:', card)
+
         self.hands[0].hit(card)
         self.show_card_to_players(card)
         self.hands[0].hit(self._shoe.draw().flip())

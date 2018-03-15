@@ -8,19 +8,19 @@ import cProfile
 # IMPORT your bots from wherever you keep them, then update the list of bots below.
 #
 from allbots import SommererBotBasicStrategy, \
-                    IanFour, \
-                    StreichBotSeven, \
-                    NhuBlackjackBotOne, \
-                    GlinesBotFour, \
-                    RichBotTwo, \
-                    BadRachelBot5, \
+                    IanFive, \
+                    StreichBotSeventySeven, \
+                    NhuBlackjackBotTwo, \
+                    GlinesBotSix, \
+                    RichBotThree, \
+                    BadRachelBot6, \
                     TessaBot
 
 def main():
-    seedNumber = 355
+    seedNumber = 353
     seed(seedNumber)
     amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
-    bots = [SommererBotBasicStrategy, StreichBotSeven, RichBotTwo, BadRachelBot5, TessaBot, GlinesBotFour, NhuBlackjackBotOne]
+    bots = [StreichBotSeventySeven, IanFive, RichBotThree, TessaBot, GlinesBotSix, NhuBlackjackBotTwo]
 
     global simulation
     simulation = Simulation(bots)
@@ -144,9 +144,9 @@ class Simulation(object):
             for player in table.players:
                 string = ''
                 string += f'{player.name:18}:'
-                string += f'{player.totalWagers:13,.2f}   '
+                string += f'{player.totalWagers:13,.0f}   '
                 string += f'${player.totalWagers/player.handsPlayed:6.2f}'
-                string += f'{player.handsPlayed:9}      '
+                string += f'{player.handsPlayed:9,}      '
                 string += f'{player.timesHit/player.handsPlayed:5.2f}     '
                 string += f'{player.timesSplit/player.handsPlayed*100:2.0f}%        '
                 string += f'{player.timesDoubled/player.handsPlayed*100:2.0f}%         '
@@ -162,6 +162,7 @@ class Simulation(object):
                 totalhands += player.handsPlayed
         print('-------------------------------------------------------------------------------------------------------------------------------------------')
         print(f'Actual hands played: {totalhands}')
+        print(self.tables[0].players[0].mycount)
 
 
 
