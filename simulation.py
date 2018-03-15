@@ -20,7 +20,7 @@ def main():
     seedNumber = 353
     seed(seedNumber)
     amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
-    bots = [StreichBotSeventySeven, IanFive, RichBotThree, TessaBot, GlinesBotSix, NhuBlackjackBotTwo]
+    bots = [SommererBotBasicStrategy, StreichBotSeventySeven, IanFive, RichBotThree, TessaBot, GlinesBotSix, NhuBlackjackBotTwo, BadRachelBot6]
 
     global simulation
     simulation = Simulation(bots)
@@ -117,7 +117,7 @@ class Simulation(object):
                     f"   doubled:    {player.timesDoubled} ({player.timesDoubled/player.handsPlayed*100:.0f}% of the time)")
                 print()
                 print(
-                    f"   blackjack!: {player.timesBlackjack} ({player.timesBlackjack/player.handsPlayed*100:.0f}% of the time)")
+                    f"   blackjack!: {player.timesBlackjack} ({player.timesBlackjack/player.handsPlayed*100:.1f}% of the time)")
                 print(
                     f"   busted:     {player.timesBusted} ({player.timesBusted/player.handsPlayed*100:.0f}% of the time)")
                 print()

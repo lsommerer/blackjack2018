@@ -119,7 +119,6 @@ class Dealer(Player):
                 player.totalWagers += betAmount
                 if self.isVerbose: print(f"{name} is betting ${betAmount:0.2f}.")
             else:
-                if self.isVerbose: print(f"{name} doesn't have enough money to bet ${betAmount:0.2f}. Sitting this hand out.")
                 raise ValueError(f"{player} doesn't have enough money to bet ${betAmount:0.2f}.")
             for player in leavingPlayers:
                 self._table.leave_table(player)
@@ -245,6 +244,7 @@ class Dealer(Player):
             player.totalWagers += additionalBet
         else:
             if self.isVerbose: print("Sorry, you can't double this hand (pick again).")
+            self.player_hit(play, hand)
 
     def player_surrender(self, player, hand, *args):
         print('Sorry, surrender is not implemented (pick again).')
