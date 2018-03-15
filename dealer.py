@@ -120,6 +120,7 @@ class Dealer(Player):
                 if self.isVerbose: print(f"{name} is betting ${betAmount:0.2f}.")
             else:
                 if self.isVerbose: print(f"{name} doesn't have enough money to bet ${betAmount:0.2f}. Sitting this hand out.")
+                raise ValueError(f"{player} doesn't have enough money to bet ${betAmount:0.2f}.")
             for player in leavingPlayers:
                 self._table.leave_table(player)
 
