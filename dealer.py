@@ -100,12 +100,17 @@ class Dealer(Player):
             if self.isVerbose: print(f'\n{player}')
             betAmount = player.bet_or_leave()
             name = player.name.capitalize()
+            minimumBet = 1
             if betAmount == -1 or player.money < 1:  # leaving table
                 leavingPlayers.append(player)
                 if self.isVerbose: print(f"{name} is leaving the table with ${player.money:0.2f}.")
             elif betAmount == 0:
                 if self.isVerbose: print(f"{name} is sitting this hand out.")
             elif betAmount > 0 and player.money >= betAmount:
+                if betAmount < minimumBet:
+                    betAmount = minimumBet
+                if betAmount > player.money:
+                    betAmount = player.money
                 self._playingPlayers.append(player)
                 player.rake_out(betAmount)
                 self.rake_in(betAmount)
