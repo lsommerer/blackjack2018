@@ -232,6 +232,7 @@ class Dealer(Player):
             player.totalWagers += hand.bet
         else:
             if self.isVerbose: print("Sorry, you can't split this hand (pick again).")
+            self.player_hit(player, hand)
 
     def player_double_down(self, player, hand, additionalBet):
         if hand.can_double() and is_number(additionalBet) and player.money >= additionalBet:
@@ -244,7 +245,7 @@ class Dealer(Player):
             player.totalWagers += additionalBet
         else:
             if self.isVerbose: print("Sorry, you can't double this hand (pick again).")
-            self.player_hit(play, hand)
+            self.player_hit(player, hand)
 
     def player_surrender(self, player, hand, *args):
         print('Sorry, surrender is not implemented (pick again).')
