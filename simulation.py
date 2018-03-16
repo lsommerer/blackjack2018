@@ -21,7 +21,8 @@ def main():
     seedNumber = 353
     seed(seedNumber)
     amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
-    bots = [SommererBotBasicStrategy, SommererBotCardCounter, StreichBotSeventySeven, IanFive, RichBotThree, TessaBot, GlinesBotSix, NhuBlackjackBotTwo, BadRachelBot6]
+    #bots = [SommererBotBasicStrategy, SommererBotCardCounter, StreichBotSeventySeven, IanFive, RichBotThree, TessaBot, GlinesBotSix, NhuBlackjackBotTwo, BadRachelBot6]
+    bots = [StreichBotSeventySeven, IanFive, RichBotThree, TessaBot, GlinesBotSix, NhuBlackjackBotTwo, BadRachelBot6]
 #    bots = [GlinesBotSix]
 
     global simulation
