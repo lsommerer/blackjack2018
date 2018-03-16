@@ -8,6 +8,7 @@ import cProfile
 # IMPORT your bots from wherever you keep them, then update the list of bots below.
 #
 from allbots import SommererBotBasicStrategy, \
+                    SommererBotCardCounter, \
                     IanFive, \
                     StreichBotSeventySeven, \
                     NhuBlackjackBotTwo, \
@@ -20,7 +21,8 @@ def main():
     seedNumber = 353
     seed(seedNumber)
     amounts = [25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
-    bots = [SommererBotBasicStrategy, StreichBotSeventySeven, IanFive, RichBotThree, TessaBot, GlinesBotSix, NhuBlackjackBotTwo, BadRachelBot6]
+    bots = [SommererBotBasicStrategy, SommererBotCardCounter, StreichBotSeventySeven, IanFive, RichBotThree, TessaBot, GlinesBotSix, NhuBlackjackBotTwo, BadRachelBot6]
+#    bots = [GlinesBotSix]
 
     global simulation
     simulation = Simulation(bots)
@@ -149,12 +151,12 @@ class Simulation(object):
                 string += f'{player.handsPlayed:9,}      '
                 string += f'{player.timesHit/player.handsPlayed:5.2f}     '
                 string += f'{player.timesSplit/player.handsPlayed*100:2.0f}%        '
-                string += f'{player.timesDoubled/player.handsPlayed*100:2.0f}%         '
-                string += f'{player.timesBlackjack/player.handsPlayed*100:2.0f}%     '
+                string += f'{player.timesDoubled/player.handsPlayed*100:2.0f}%        '
+                string += f'{player.timesBlackjack/player.handsPlayed*100:2.1f}%     '
                 string += f'{player.timesBusted/player.handsPlayed*100:2.0f}%   '
                 string += f'{player.timesWon/player.handsPlayed*100:2.0f}%     '
-                string += f'{player.timesLost/player.handsPlayed*100:2.0f}%     '
-                string += f'{player.timesPushed/player.handsPlayed*100:2.0f}%      '
+                string += f'{player.timesLost/player.handsPlayed*100:2.0f}%    '
+                string += f'{player.timesPushed/player.handsPlayed*100:2.1f}%      '
                 string += f'{player.timesInsurance/player.handsPlayed*100:2.0f}%    '
                 string += f'{player.timesAbend:3}  '
                 #string += f'{player.timesSurrendered/player.handsPlayed*100:.0f}%  '
@@ -162,7 +164,6 @@ class Simulation(object):
                 totalhands += player.handsPlayed
         print('-------------------------------------------------------------------------------------------------------------------------------------------')
         print(f'Actual hands played: {totalhands}')
-        print(self.tables[0].players[0].mycount)
 
 
 
